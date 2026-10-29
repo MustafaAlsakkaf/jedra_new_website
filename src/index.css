@@ -1,9 +1,83 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-*{
-  font-family: Outfit, sans-serif;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-navy antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* Offset anchored sections below the fixed header */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+  :focus-visible {
+    outline: 3px solid #fcb62b;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: #fcb62b;
+    color: #0e1e3d;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-medium transition-colors duration-200;
+  }
+  .btn-gold {
+    @apply btn bg-gold text-navy hover:bg-gold-deep;
+  }
+  .btn-ghost-light {
+    @apply btn border border-white/40 text-white hover:border-white hover:bg-white/10;
+  }
+  .btn-navy {
+    @apply btn bg-navy text-white hover:bg-navy-soft;
+  }
+  .field {
+    @apply mt-2 block w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-navy placeholder:text-muted/60 transition-colors focus:border-navy focus:outline-none focus:ring-2 focus:ring-gold/60;
+  }
+}
+
+/* Najdi crenellation: the stepped triangles that crown traditional Riyadh mud-brick walls */
+.najdi-edge {
+  height: 14px;
+  background-repeat: repeat-x;
+  background-size: 28px 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M0 14 L7 7 L14 14 L21 7 L28 14 Z' fill='%23EADFCB'/%3E%3Cpath d='M4 14 L7 11 L10 14 Z M18 14 L21 11 L24 14 Z' fill='%23FCB62B'/%3E%3C/svg%3E");
+}
+.najdi-edge-white {
+  height: 14px;
+  background-repeat: repeat-x;
+  background-size: 28px 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cpath d='M0 14 L7 7 L14 14 L21 7 L28 14 Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-inline-start: 2px;
+  vertical-align: text-bottom;
+  background: #fcb62b;
+  animation: caret-blink 1s steps(1) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .caret {
+    animation: none;
+  }
 }
