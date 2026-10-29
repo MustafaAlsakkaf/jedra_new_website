@@ -11,12 +11,13 @@ export const SITE = {
   gtm: 'GTM-PVGMFHCS',
   year: 2025,
   // Social links: add the full URL to show the icon in the footer, leave empty to hide it.
-  social: { x: '', instagram: '', snapchat: '', tiktok: '', linkedin: '' },
+  social: { x: 'https://x.com/jedrahq', instagram: 'https://www.instagram.com/jedrahq', snapchat: 'https://www.snapchat.com/add/jedrahq', tiktok: 'https://www.tiktok.com/@jedrahq', linkedin: 'https://www.linkedin.com/company/jedrahq' },
+  founded: 2025,
 };
 
 // logo: file in site/assets/partners/ (single-color, shown only with the partner's approval); h: display height in px, balanced by eye
 export const PARTNERS = [
-  { ar: 'مكين', en: 'Makeen', logo: 'makeen.png', h: 58 },
+  { ar: 'مكين', en: 'Makeen', logo: 'makeen.png', h: 46 },
   { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera', logo: 'al-ajlan-riviera.png', h: 36 },
   { ar: 'الرمز', en: 'Alramz', logo: 'alramz.png', h: 46 },
   { ar: 'بونساي', en: 'Bonsai', logo: 'bonsai.png', h: 66 },
@@ -58,10 +59,10 @@ export const T = {
     waText: 'مرحباً جيدرا، أرغب في التواصل مع مستشار.',
     stats: [
       { value: '350', unit: 'مليون', label: 'ريال قيمة المبيعات المنجزة', note: 1 },
+      { value: '+300', label: 'وحدة عقارية مباعة', note: 1 },
       { value: '+50', label: 'مستشاراً عقارياً' },
-      { value: '4', label: 'مشاريع بيعت وحداتها بالكامل' },
     ],
-    footnotes: ['القيمة الإجمالية للصفقات التي أتمّتها جيدرا حتى تاريخه، وفق سجلات الشركة.'],
+    footnotes: ['قيمة الصفقات التي أتمّتها جيدرا وعدد الوحدات المباعة منذ تأسيسها في 2025 حتى تاريخه، وفق سجلات الشركة.'],
     status: { available: 'متاح للبيع', sold: 'تم البيع' },
     city: (d) => `${d}، الرياض`,
     home: {
@@ -177,6 +178,7 @@ export const T = {
       lead: 'جيدرا شركة سعودية متخصصة في الخدمات العقارية والحلول التقنية المرتبطة بها، تطوّر تجربة تسويق العقارات وبيعها بالجمع بين الخبرة التجارية والعمليات التشغيلية المنظمة والتقنية.',
       storyTitle: 'ما نقوم به.',
       story: [
+        'تأسست جيدرا في 2025، وخلال فترة قصيرة أتمّت مبيعات تجاوزت 350 مليون ريال وأكثر من 300 وحدة عقارية، مع نخبة من المطورين في الرياض.',
         'نتولى تسويق المشاريع السكنية وإدارة مبيعاتها نيابة عن المطورين، من دراسة المشروع حتى بيع آخر وحدة.',
         'ونرافق المشترين والمستثمرين، من داخل المملكة وخارجها، حتى يجدوا الوحدة المناسبة ويوقّعوا عقدهم بثقة.',
       ],
@@ -195,6 +197,7 @@ export const T = {
       licenseTitle: 'بيانات الشركة.',
       licenseFal: 'رخصة فال (الهيئة العامة للعقار)',
       licenseUnified: 'الرقم الوطني الموحد',
+      foundedTitle: 'سنة التأسيس',
       officeTitle: 'المقر',
       office: 'الرياض، المملكة العربية السعودية',
     },
@@ -299,10 +302,10 @@ export const T = {
     waText: 'Hello JEDRA, I would like to speak with an advisor.',
     stats: [
       { value: '350', unit: 'M', label: 'SAR in completed sales', note: 1 },
+      { value: '300+', label: 'Property units sold', note: 1 },
       { value: '50+', label: 'Real estate advisors' },
-      { value: '4', label: 'Projects fully sold out' },
     ],
-    footnotes: ['Total value of transactions completed by JEDRA to date, per company records.'],
+    footnotes: ['Value of transactions completed and units sold by JEDRA since its founding in 2025, per company records.'],
     status: { available: 'Now selling', sold: 'Sold out' },
     city: (d) => `${d}, Riyadh`,
     home: {
@@ -418,6 +421,7 @@ export const T = {
       lead: 'JEDRA is a Saudi company specialized in real estate services and related technology solutions, improving how property is marketed and sold by combining commercial expertise, organized operations and technology.',
       storyTitle: 'What we do.',
       story: [
+        'JEDRA was founded in 2025, and in a short time has completed more than SAR 350 million in sales and over 300 property units with leading developers in Riyadh.',
         'We market residential projects and manage their sales on behalf of developers, from the project study to the last unit.',
         'And we guide buyers and investors, in Saudi Arabia and abroad, until they find the right home and sign with confidence.',
       ],
@@ -436,6 +440,7 @@ export const T = {
       licenseTitle: 'Company details.',
       licenseFal: 'FAL license (Real Estate General Authority)',
       licenseUnified: 'Unified national number',
+      foundedTitle: 'Founded',
       officeTitle: 'Office',
       office: 'Riyadh, Saudi Arabia',
     },

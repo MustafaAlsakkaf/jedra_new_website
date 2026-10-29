@@ -361,6 +361,7 @@ ${img('riyadh', lang === 'ar' ? 'أفق الرياض عند الغروب' : 'Riy
     address: { '@type': 'PostalAddress', addressLocality: lang === 'ar' ? 'الرياض' : 'Riyadh', addressCountry: 'SA' },
     areaServed: { '@type': 'City', name: lang === 'ar' ? 'الرياض' : 'Riyadh' },
     identifier: [{ '@type': 'PropertyValue', name: 'FAL', value: SITE.falLicense }, { '@type': 'PropertyValue', name: 'Unified National Number', value: SITE.unifiedNumber }],
+    foundingDate: String(SITE.founded),
     sameAs: Object.values(SITE.social).filter(Boolean),
   };
   return { path: '/', key: 'home', title: h.title, description: h.description, body, jsonld: [org], footnotes: true,
@@ -497,7 +498,7 @@ function aboutPage(lang) {
 <section class="dark pad">${img('network', '', { cls: 'bg-img' })}<div class="wrap over"><h2 class="h-l center">${a.howTitle}</h2><div class="grid-4" style="margin-top:56px">${cards(t.method)}</div></div></section>
 <section class="light pad"><div class="wrap">
 <h2 class="h-l">${a.licenseTitle}</h2>
-<dl class="facts"><div class="fact"><dt>${a.licenseFal}</dt><dd class="ltr">${SITE.falLicense}</dd></div><div class="fact"><dt>${a.licenseUnified}</dt><dd class="ltr">${SITE.unifiedNumber}</dd></div><div class="fact"><dt>${a.officeTitle}</dt><dd>${a.office}</dd></div></dl>
+<dl class="facts"><div class="fact"><dt>${a.foundedTitle}</dt><dd>${SITE.founded}</dd></div><div class="fact"><dt>${a.licenseFal}</dt><dd class="ltr">${SITE.falLicense}</dd></div><div class="fact"><dt>${a.licenseUnified}</dt><dd class="ltr">${SITE.unifiedNumber}</dd></div><div class="fact"><dt>${a.officeTitle}</dt><dd>${a.office}</dd></div></dl>
 <div class="center" style="margin-top:72px"><h2 class="h-m">${t.home.partnersTitle}</h2>${partnersBlock(lang)}</div>
 </div></section>
 </main>`;
