@@ -223,74 +223,56 @@ function soldItem(lang, p, linked = true) {
 }
 
 // Lead forms. kind: general | project | developer. All post to Web3Forms with campaign data (see main.js).
-function leadForm(lang, kind, { project = '', interest = '', name = 'website', compact = false } = {}) {
+// One smart form for every page. `type` preselects the request type from the page the visitor is on
+// (they can change it); fields appear or hide with data-when="field=key key;field=key".
+function leadForm(lang, { type = 'general', project = null, interest = '', name = 'website' } = {}) {
   const t = T[lang];
   const f = t.form;
-  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}"`;
-  const hidden = `<input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="language" value="${lang}">${project ? `<input type="hidden" name="project" value="${esc(project)}">` : ''}${interest ? `<input type="hidden" name="interest" value="${esc(interest)}">` : ''}`;
+  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}" data-need-fields="${esc(f.needFields)}"`;
+  const hidden = `<input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="language" value="${lang}">${interest ? `<input type="hidden" name="interest" value="${esc(interest)}">` : ''}`;
   const id = (x) => `${name}-${x}`;
-  const field = (key, label, input, full = false) => `<div class="field${full ? ' full' : ''}"><label for="${id(key)}">${label}</label>${input}</div>`;
-  const chips = (group, legend, options, checked, full = true, extra = '') => `<fieldset class="field${full ? ' full' : ''}"${extra}><legend>${legend}</legend><div class="chips">${Object.entries(options).map(([k, label]) => `<label class="chip"><input type="radio" name="${group}" value="${esc(label)}" data-key="${k}"${k === checked ? ' checked' : ''}><span>${label}</span></label>`).join('')}</div></fieldset>`;
-  const nameF = field('name', f.name, `<input id="${id('name')}" name="name" type="text" autocomplete="name" placeholder="${esc(f.namePh)}" required>`);
-  const phoneF = field('phone', f.phone, `<input id="${id('phone')}" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="${esc(f.phonePh)}" required>`);
-  const emailF = (full = false) => field('email', `${f.email} <span class="opt">${f.optional}</span>`, `<input id="${id('email')}" name="email" type="email" autocomplete="email" dir="ltr">`, full);
-  const messageF = (label = f.message) => field('message', `${label} <span class="opt">${f.optional}</span>`, `<textarea id="${id('message')}" name="message" rows="3" placeholder="${esc(f.messagePh)}"></textarea>`, true);
-  const consent = `<label class="consent full"><input type="checkbox" name="consent" value="yes" required><span>${f.consent(href(lang, '/privacy/'))}</span></label>
-<label class="consent full optional"><input type="checkbox" name="marketing_consent" value="yes"><span>${f.marketing}</span></label>`;
-  const submit = (label) => `<button class="btn btn-navy full" type="submit">${label}</button><p class="form-status" role="status" aria-live="polite"></p>`;
-  const projectOptions = [`<option value="${esc(f.projectAny)}">${f.projectAny}</option>`, ...PROJECTS.filter((p) => p.status === 'available').map((p) => `<option value="${esc(p[lang])}">${p[lang]}</option>`)].join('');
-
-  if (kind === 'developer') {
-    return `<form class="form" ${attrs} novalidate>${hidden}<input type="hidden" name="request_type" value="${esc(f.types.developer)}">
-${nameF}
-${field('company', f.company, `<input id="${id('company')}" name="company" type="text" autocomplete="organization" required>`)}
-${phoneF}
-${emailF()}
-${chips('project_type', f.projectType, f.projectTypes, 'residential')}
-${field('units', f.units, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1" required>`)}
-${messageF()}
-${consent}
-${submit(f.submitDev)}
-</form>`;
-  }
-  if (kind === 'project') {
-    return `<form class="form" ${attrs} novalidate>${hidden}
-${chips('request_type', f.requestType, { project: f.types.project, visit: f.types.visit }, 'project')}
-${nameF}
-${phoneF}
-${chips('visit_time', f.visitTime, f.visitTimes, 'evening', true, ' data-show-when="visit" hidden')}
-${messageF()}
-${consent}
-${submit(f.submitProject)}
-</form>`;
-  }
-  // general
+  const field = (key, label, input, { full = false, w = '' } = {}) => `<div class="field${full ? ' full' : ''}"${when(w)}><label for="${id(key)}">${label}</label>${input}</div>`;
+  const chips = (group, legend, options, checked, w = '', extra = () => '') => `<fieldset class="field full"${when(w)}><legend>${legend}</legend><div class="chips">${Object.entries(options).map(([k, label]) => `<label class="chip"><input type="radio" name="${group}" value="${esc(label)}" data-key="${k}"${k === checked ? ' checked' : ''}${extra(k)}><span>${label}</span></label>`).join('')}</div></fieldset>`;
+  const opt = `<span class="opt">${f.optional}</span>`;
+  const available = PROJECTS.filter((p) => p.status === 'available');
+  const picks = { ...Object.fromEntries(available.map((p) => [p.slug, p[lang]])), help: f.projectHelp };
+  const pickDefault = project && project.status === 'available' ? project.slug : 'help';
+  const BUYER = 'request_type=project visit';
+  // Render the initial visibility so the form is right before the script runs
+  const state = { request_type: type, project: pickDefault };
+  const shown = (w) => w.split(';').every((c) => { const [n, v] = c.split('='); return v.split(' ').includes(state[n]); });
+  const when = (w) => (w ? ` data-when="${w}"${shown(w) ? '' : ' hidden'}` : '');
   return `<form class="form" ${attrs} novalidate>${hidden}
-${chips('request_type', f.requestType, f.types, 'project')}
-${nameF}
-${phoneF}
-${compact ? '' : `<div class="field" data-show-when="project visit"><label for="${id('project')}">${f.projectSel}</label><select id="${id('project')}" name="project">${projectOptions}</select></div>
-${chips('contact_by', f.contactBy, f.contactWays, 'call')}`}
-${chips('visit_time', f.visitTime, f.visitTimes, 'evening', true, ' data-show-when="visit" hidden')}
-${messageF()}
-${consent}
-${submit(f.submit)}
+${chips('request_type', f.requestType, f.types, type, '', (k) => ` data-submit="${esc(k === 'developer' ? f.submitDev : f.submit)}"`)}
+${field('name', f.name, `<input id="${id('name')}" name="name" type="text" autocomplete="name" placeholder="${esc(f.namePh)}" required>`)}
+${field('phone', f.phone, `<input id="${id('phone')}" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="${esc(f.phonePh)}" required>`)}
+${field('company', f.company, `<input id="${id('company')}" name="company" type="text" autocomplete="organization" required>`, { w: 'request_type=developer' })}
+${field('email', `${f.email} ${opt}`, `<input id="${id('email')}" name="email" type="email" autocomplete="email" dir="ltr">`, { w: 'request_type=developer' })}
+${chips('project', f.projectSel, picks, pickDefault, BUYER)}
+${chips('unit_type', `${f.unitType} ${opt}`, f.unitTypes, '', `${BUYER};project=help`)}
+${field('budget', `${f.budget} ${opt}`, `<select id="${id('budget')}" name="budget"><option value="">${f.budgetAny}</option>${f.budgets.map((x) => `<option>${x}</option>`).join('')}</select>`, { w: `${BUYER};project=help` })}
+${chips('visit_time', f.visitTime, f.visitTimes, 'evening', 'request_type=visit')}
+${chips('project_type', f.projectType, f.projectTypes, 'residential', 'request_type=developer')}
+${field('units', f.units, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1" required>`, { w: 'request_type=developer' })}
+${chips('contact_by', f.contactBy, f.contactWays, 'call', 'request_type=project visit general')}
+${field('message', `${f.message} ${opt}`, `<textarea id="${id('message')}" name="message" rows="3" placeholder="${esc(f.messagePh)}"></textarea>`, { full: true })}
+<label class="consent full"><input type="checkbox" name="consent" value="yes" required><span>${f.consent(href(lang, '/privacy/'))}</span></label>
+<label class="consent full optional"><input type="checkbox" name="marketing_consent" value="yes"><span>${f.marketing}</span></label>
+<button class="btn btn-navy full" type="submit">${type === 'developer' ? f.submitDev : f.submit}</button><p class="form-status" role="status" aria-live="polite"></p>
 </form>`;
 }
-
-// One "Talk to JEDRA" block, same layout on every page: heading, the form, and direct channels beside it.
-function contactSection(lang, { kind = 'general', name = 'contact', interest = '', project = '', title, lead, id = 'contact', tone = 'light', after = '' } = {}) {
+function contactSection(lang, { type = 'general', name = 'contact', interest = '', project = null, title, lead, id = 'contact', tone = 'light', after = '' } = {}) {
   const t = T[lang];
   const h = t.home;
   const heading = title === null ? '' : `<div class="contact-head"><h2 class="h-l" id="${id}-title">${title || h.contactTitle}</h2><p class="lead">${lead || h.contactLead}</p></div>`;
   return `<section class="${tone} pad" id="${id}"${title === null ? '' : ` aria-labelledby="${id}-title"`}><div class="wrap">
 ${heading}
 <div class="contact-split">
-<div class="contact-form">${leadForm(lang, kind, { name, interest, project })}${after}</div>
+<div class="contact-form">${leadForm(lang, { type, name, interest, project })}${after}</div>
 <aside class="contact-aside" aria-label="${esc(h.contactDirect)}">
 <h3>${h.contactDirect}</h3>
 <div class="channels">
-<a class="channel" href="${wa(project ? t.project.waText(project) : t.waText)}" data-loc="${name}">${WA_SVG}<span>${t.actions.whatsapp}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
+<a class="channel" href="${wa(project ? t.project.waText(project[lang]) : t.waText)}" data-loc="${name}">${WA_SVG}<span>${t.actions.whatsapp}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
 <a class="channel" href="tel:${SITE.phone}" data-loc="${name}">${icon('phone', '')}<span>${t.actions.call}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
 <a class="channel" href="mailto:${SITE.email}">${icon('mail', '')}<span>${t.form.email}<small class="ltr">${SITE.email}</small></span></a>
 </div>
@@ -436,7 +418,7 @@ ${img('pattern-line', '', { cls: 'bg-img dim' })}
 <div class="grid-4 features" style="margin-top:64px;gap:44px 28px">${cards(d.benefits, 'feature')}</div></div>
 </section>
 
-${contactSection(lang, { kind: 'developer', name: 'developer', id: 'meet', tone: 'mist', title: d.meetTitle, lead: d.meetLead })}
+${contactSection(lang, { type: 'developer', name: 'developer', id: 'meet', tone: 'mist', title: d.meetTitle, lead: d.meetLead })}
 </main>`;
   return { path: '/developers/', key: 'developers', title: d.title, description: d.description, body, bodyClass: 'has-subnav', crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }
@@ -456,7 +438,7 @@ function projectsPage(lang) {
 <div data-group="sold"><h2 class="h-m" style="margin-top:72px">${p.soldTitle}</h2>
 <div class="grid-2 sold-list" style="margin-top:28px">${sold.map((x) => soldItem(lang, x)).join('')}</div></div>
 </div></section>
-${contactSection(lang, { name: 'properties', title: p.askSimilar, lead: p.askSimilarText })}
+${contactSection(lang, { type: 'project', name: 'properties', title: p.askSimilar, lead: p.askSimilarText })}
 </main>`;
   const list = { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: PROJECTS.map((x, i) => ({ '@type': 'ListItem', position: i + 1, name: x[lang], url: SITE.url + projectUrl(lang, x) })) };
   return { path: '/properties/', key: 'projects', title: p.title, description: p.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs), list] };
@@ -492,8 +474,8 @@ ${p.cover ? `<div class="wide hero-media over">${img(p.cover, c.photoAlt(name), 
 </section>
 <section class="light pad-s"><div class="wrap"><dl class="facts" style="margin-top:0">${facts.map(([k, v]) => `<div class="fact"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div></section>
 ${available
-    ? contactSection(lang, { kind: 'project', name: 'project', project: name, id: 'request', tone: 'mist', title: c.formTitle, lead: c.formLead, after: p.landing ? `<p class="muted waitlist">${c.waitlistText} <a class="more" href="${p.landing}">${t.cta.waitlist}</a></p>` : '' })
-    : contactSection(lang, { name: 'project-sold', tone: 'mist', title: c.soldTitle, lead: c.soldText })}
+    ? contactSection(lang, { type: 'project', name: 'project', project: p, id: 'request', tone: 'mist', title: c.formTitle, lead: c.formLead, after: p.landing ? `<p class="muted waitlist">${c.waitlistText} <a class="more" href="${p.landing}">${t.cta.waitlist}</a></p>` : '' })
+    : contactSection(lang, { type: 'project', name: 'project-sold', project: p, tone: 'mist', title: c.soldTitle, lead: c.soldText })}
 <section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over"><h2 class="h-l">${t.home.statsTitle}</h2>${stats(lang)}</div></section>
 </main>`;
   const residence = { '@context': 'https://schema.org', '@type': 'ApartmentComplex', name, url: SITE.url + projectUrl(lang, p), address: { '@type': 'PostalAddress', addressLocality: lang === 'ar' ? 'الرياض' : 'Riyadh', addressRegion: p.district[lang], addressCountry: 'SA' } };
@@ -539,7 +521,7 @@ function internationalPage(lang) {
 <section class="light pad"><div class="wrap"><h2 class="h-l center">${i.pointsTitle}</h2>
 <div class="grid-3 features" style="margin-top:56px;gap:40px 28px">${cards(i.points, 'feature')}</div></div></section>
 <section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over">${stats(lang, 'margin-top:0')}</div></section>
-${contactSection(lang, { name: 'international', interest: 'international' })}
+${contactSection(lang, { type: 'project', name: 'international', interest: 'international' })}
 </main>`;
   return { path: '/international/', key: 'international', title: i.title, description: i.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }

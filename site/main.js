@@ -45,6 +45,15 @@
   if (!campaign.referrer && document.referrer) campaign.referrer = document.referrer;
   try { sessionStorage.setItem('jedra_campaign', JSON.stringify(campaign)); } catch (e) { /* storage blocked */ }
 
+  // Remember what the visitor was looking at, so a general form opens on the right request type
+  let context = '';
+  const here = location.pathname.replace(/^\/en/, '');
+  try {
+    if (here.startsWith('/developers/')) sessionStorage.setItem('jedra_context', 'developer');
+    else if (here.startsWith('/properties/') || here.startsWith('/international/')) sessionStorage.setItem('jedra_context', 'project');
+    context = sessionStorage.getItem('jedra_context') || '';
+  } catch (e) { /* storage blocked */ }
+
   // Calls and WhatsApp clicks, for ad conversion tracking in Google Tag Manager
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href]');
@@ -58,14 +67,26 @@
   document.querySelectorAll('form[data-lead]').forEach((form) => {
     const status = form.querySelector('.form-status');
     const submit = form.querySelector('button[type="submit"]');
-    const label = submit.textContent;
-    // Show fields that only apply to some request types (e.g. visit time for a visit request)
+    let label = submit.textContent;
+    const keyOf = (n) => { const el = form.querySelector(`input[name="${n}"]:checked`); return el ? el.dataset.key : ''; };
+    // Show only the fields that fit the chosen request type (and project choice)
     const syncType = () => {
+      form.querySelectorAll('[data-when]').forEach((el) => {
+        el.hidden = !el.dataset.when.split(';').every((c) => { const [n, v] = c.split('='); return v.split(' ').includes(keyOf(n)); });
+      });
       const picked = form.querySelector('input[name="request_type"]:checked');
-      const key = picked ? picked.dataset.key : '';
-      form.querySelectorAll('[data-show-when]').forEach((el) => { el.hidden = !el.dataset.showWhen.split(' ').includes(key); });
+      if (picked && picked.dataset.submit && !submit.disabled) { label = picked.dataset.submit; submit.textContent = label; }
     };
-    form.addEventListener('change', (e) => e.target.name === 'request_type' && syncType());
+    // Preselect from the link the visitor followed, e.g. /contact/?request=developer or ?project=bonsai
+    const pre = (n, k) => { const el = k && form.querySelector(`input[name="${n}"][data-key="${CSS.escape(k)}"]`); if (el) el.checked = true; };
+    // Otherwise, a general form takes the visitor's earlier interest in this visit (developer pages or projects)
+    if (!params.get('request') && keyOf('request_type') === 'general') pre('request_type', context);
+    pre('request_type', params.get('request'));
+    // A campaign named after a project (utm_campaign=bonsai-...) preselects that project
+    const camp = (campaign.utm_campaign || '').toLowerCase();
+    if (keyOf('project') === 'help') form.querySelectorAll('input[name="project"]').forEach((el) => { if (el.dataset.key !== 'help' && camp.includes(el.dataset.key)) el.checked = true; });
+    pre('project', params.get('project'));
+    form.addEventListener('change', (e) => e.target.type === 'radio' && syncType());
     syncType();
     form.syncType = syncType;
     form.addEventListener('submit', async (e) => {
@@ -78,6 +99,13 @@
         phone.focus();
         return;
       }
+      const missing = [...form.querySelectorAll('[required]')].find((el) => !el.closest('[hidden]') && el.type !== 'checkbox' && !el.value.trim());
+      if (missing && missing.name !== 'phone') {
+        status.textContent = form.dataset.needFields;
+        status.className = 'form-status err';
+        missing.focus();
+        return;
+      }
       const consent = form.querySelector('input[name="consent"]');
       if (consent && !consent.checked) {
         status.textContent = form.dataset.needConsent;
@@ -85,9 +113,9 @@
         consent.focus();
         return;
       }
-      form.querySelectorAll('[data-show-when][hidden] input, [data-show-when][hidden] select').forEach((el) => { el.disabled = true; });
+      form.querySelectorAll('[data-when][hidden] input, [data-when][hidden] select').forEach((el) => { el.disabled = true; });
       const data = new FormData(form);
-      form.querySelectorAll('[data-show-when] input, [data-show-when] select').forEach((el) => { el.disabled = false; });
+      form.querySelectorAll('[data-when] input, [data-when] select').forEach((el) => { el.disabled = false; });
       // Record the optional marketing choice either way, so "no" is documented too
       const marketing = form.querySelector('input[name="marketing_consent"]');
       if (marketing) data.set('marketing_consent', marketing.checked ? 'yes' : 'no');
