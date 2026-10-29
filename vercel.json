@@ -6,6 +6,17 @@
   "outputDirectory": "dist",
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "newhires.jedra.properties"
+        }
+      ],
+      "destination": "/newhires.html",
+      "permanent": false
+    },
+    {
       "source": "/projects",
       "destination": "/properties/",
       "permanent": true
