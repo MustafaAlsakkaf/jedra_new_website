@@ -204,6 +204,8 @@ function partnerLogo(p, lang) {
 }
 const partnersBlock = (lang, tone = '') => `<ul class="partners${tone ? ' ' + tone : ''}" role="list">${PARTNERS.map((p) => `<li class="partner">${partnerLogo(p, lang)}</li>`).join('')}</ul>`;
 
+// A brochure is a file in site/assets/brochures/ or a full link, optionally one per language
+const brochureUrl = (p, lang) => { const b = typeof p.brochure === 'string' ? p.brochure : p.brochure[lang] || p.brochure.ar; return /^https?:/.test(b) ? b : `/assets/brochures/${b}`; };
 const projectUrl = (lang, p) => href(lang, `/properties/${p.slug}/`);
 
 function featureCard(lang, p) {
@@ -229,7 +231,7 @@ function soldItem(lang, p, linked = true) {
 function leadForm(lang, { type = 'general', project = null, interest = '', name = 'website' } = {}) {
   const t = T[lang];
   const f = t.form;
-  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}" data-need-fields="${esc(f.needFields)}"${project && project.brochure ? ` data-brochure="/assets/brochures/${esc(project.brochure)}" data-brochure-ready="${esc(f.brochureReady)}" data-brochure-link="${esc(f.brochureLink)}"` : ''}`;
+  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}" data-need-fields="${esc(f.needFields)}"${project && project.brochure ? ` data-brochure="${esc(brochureUrl(project, lang))}" data-brochure-ready="${esc(f.brochureReady)}" data-brochure-link="${esc(f.brochureLink)}"` : ''}`;
   const hidden = `<input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="language" value="${lang}">${interest ? `<input type="hidden" name="interest" value="${esc(interest)}">` : ''}`;
   const id = (x) => `${name}-${x}`;
   const field = (key, label, input, { full = false, w = '' } = {}) => `<div class="field${full ? ' full' : ''}"${when(w)}><label for="${id(key)}">${label}</label>${input}</div>`;
@@ -315,7 +317,7 @@ function homePage(lang) {
 ${heroProjects.length ? `<div class="wide hero-media hero-slides" data-slides>
 <div class="slides">${heroProjects.map((p, i) => `<a class="slide${i === 0 ? ' is-active' : ''}" href="${projectUrl(lang, p)}"${i ? ' aria-hidden="true" tabindex="-1"' : ''}>
 ${img(p.cover, t.project.photoAlt(p[lang]), { sizes: '(max-width: 1400px) 100vw, 1400px', eager: i === 0 })}
-<span class="slide-info"><span class="badge badge-available">${t.status.available}</span><span class="slide-name">${p[lang]}</span><span class="slide-meta">${t.city(p.district[lang])}</span><span class="slide-more">${t.cta.viewProject}</span></span>
+<span class="slide-info"><span class="badge badge-available">${t.status.available}</span><span class="slide-name">${p[lang]}</span><span class="slide-meta">${t.city(p.district[lang])}${p.price ? ` · ${p.price[lang]}` : ''}</span><span class="slide-more">${t.cta.viewProject}</span></span>
 </a>`).join('')}</div>
 ${heroProjects.length > 1 ? `<div class="slide-dots" role="group" aria-label="${esc(t.home.projectsTitle)}">${heroProjects.map((p, i) => `<button type="button" aria-label="${esc(p[lang])}"${i === 0 ? ' aria-current="true"' : ''}></button>`).join('')}</div>` : ''}
 </div>` : ''}

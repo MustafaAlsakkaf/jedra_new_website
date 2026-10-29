@@ -31,10 +31,17 @@ export const PARTNERS = [
 // Optional per project: type {ar,en}, price {ar,en} (approved price only), adLicense (REGA ad license no.),
 // developer {ar,en}, cover: photo name in site/assets/img/ (<name>-800.webp and a larger size),
 // area {ar,en}, bedrooms {ar,en}, delivery {ar,en}, nearby: [{ar,en,min}],
-// brochure: PDF file name in site/assets/brochures/ (sent after the visitor leaves name and phone).
+// brochure: PDF file name in site/assets/brochures/ or a full link, or {ar, en} for one per language
+// (given to the visitor right after they leave name and phone).
 export const PROJECTS = [
-  { slug: 'bonsai', ar: 'بونساي', en: 'Bonsai', district: { ar: 'حي النهضة', en: 'Al Nahdah' }, status: 'available', landing: '/submitrequest.html', cover: 'project-bonsai' },
+  { slug: 'bonsai', ar: 'بونساي', en: 'Bonsai', district: { ar: 'حي النهضة', en: 'Al Nahdah' }, status: 'available', landing: '/submitrequest.html', cover: 'project-bonsai',
+    price: { ar: 'يبدأ من 600,000 ريال', en: 'From SAR 600,000' },
+    type: { ar: 'استوديوهات وشقق', en: 'Studios and apartments' },
+    brochure: { ar: 'https://drive.google.com/file/d/1MU6Bw0AXU3wj5aEUN18hjSmcxLXBjlKN/view', en: 'https://drive.google.com/file/d/1j4AYHS-MNE4y5TKyb4XkgjPwa04oX5bq/view' } },
   { slug: 'hoksen', ar: 'هوكسن', en: 'Hoksen', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'available', landing: '/hoksen/submitrequest.html', cover: 'project-hoksen',
+    price: { ar: 'يبدأ من 1,700,000 ريال', en: 'From SAR 1,700,000' },
+    type: { ar: 'فلل مستقلة، تاون هاوس، بنتهاوس', en: 'Standalone villas, townhouses, penthouses' },
+    brochure: 'https://drive.google.com/file/d/1199Og2baSurRYwqEgdKevVmZFW1zQLm2/view',
     developer: { ar: 'نقش للاستثمار', en: 'Naqsh Investment' },
     nearby: [
       { ar: 'جامعة الأميرة نورة', en: 'Princess Nourah University', min: 7 },
@@ -250,7 +257,7 @@ export const T = {
       brochureType: 'طلب البروشور', submitBrochure: 'احصل على البروشور',
       brochureReady: 'وصلنا طلبك، والبروشور جاهز:', brochureLink: 'حمّل البروشور (PDF)',
       projectSel: 'المشروع الذي يهمك', projectHelp: 'ساعدني في الاختيار',
-      unitType: 'نوع الوحدة', unitTypes: { apartment: 'شقة', townhouse: 'تاون هاوس', floor: 'دور', villa: 'فيلا' },
+      unitType: 'نوع الوحدة', unitTypes: { studio: 'استوديو', apartment: 'شقة', townhouse: 'تاون هاوس', villa: 'فيلا', penthouse: 'بنتهاوس' },
       budget: 'الميزانية التقريبية', budgetAny: 'اختر الميزانية', budgets: ['أقل من مليون ريال', 'من 1 إلى 2 مليون ريال', 'من 2 إلى 3 ملايين ريال', 'أكثر من 3 ملايين ريال'],
       needFields: 'أكمل الحقول المطلوبة.',
       visitTime: 'الموعد المفضل للزيارة', visitTimes: { morning: 'صباحاً', evening: 'مساءً', weekend: 'نهاية الأسبوع' },
@@ -521,7 +528,7 @@ export const T = {
       brochureType: 'Get the brochure', submitBrochure: 'Get the brochure',
       brochureReady: 'Request received. Your brochure is ready:', brochureLink: 'Download the brochure (PDF)',
       projectSel: 'Project you are interested in', projectHelp: 'Help me choose',
-      unitType: 'Unit type', unitTypes: { apartment: 'Apartment', townhouse: 'Townhouse', floor: 'Floor', villa: 'Villa' },
+      unitType: 'Unit type', unitTypes: { studio: 'Studio', apartment: 'Apartment', townhouse: 'Townhouse', villa: 'Villa', penthouse: 'Penthouse' },
       budget: 'Approximate budget', budgetAny: 'Select a budget', budgets: ['Under SAR 1 million', 'SAR 1 to 2 million', 'SAR 2 to 3 million', 'Over SAR 3 million'],
       needFields: 'Please complete the required fields.',
       visitTime: 'Preferred visit time', visitTimes: { morning: 'Morning', evening: 'Evening', weekend: 'Weekend' },
