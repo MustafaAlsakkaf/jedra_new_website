@@ -192,7 +192,12 @@ ${notes}${crumbs}
 // ---------- shared blocks ----------
 const statsBlock = (lang) => T[lang].stats.map((s) => `<div><p class="stat-num">${s.value}${s.unit ? `<small>${s.unit}</small>` : ''}${s.note ? `<sup class="fn">${s.note}</sup>` : ''}</p><p class="stat-label">${s.label}</p></div>`).join('');
 
-const partnersBlock = (lang) => `<ul class="partners" role="list">${PARTNERS.map((p) => `<li class="partner">${p.logo ? `<img src="/assets/partners/${p.logo}" alt="${esc(p[lang])}" loading="lazy">` : p[lang]}</li>`).join('')}</ul>`;
+function partnerLogo(p, lang) {
+  if (!p.logo) return p[lang];
+  const { w, h } = imageSize(join(SRC, 'assets/partners', p.logo));
+  return `<img src="/assets/partners/${p.logo}" alt="${esc(p[lang])}" width="${Math.round((p.h * w) / h)}" height="${p.h}" style="--h:${p.h}px" loading="lazy" decoding="async">`;
+}
+const partnersBlock = (lang, tone = '') => `<ul class="partners${tone ? ' ' + tone : ''}" role="list">${PARTNERS.map((p) => `<li class="partner">${partnerLogo(p, lang)}</li>`).join('')}</ul>`;
 
 const projectUrl = (lang, p) => href(lang, `/properties/${p.slug}/`);
 
@@ -397,7 +402,7 @@ ${img('pattern-line', '', { cls: 'bg-img dim' })}
 <div class="wrap over"><h2 class="h-l center" id="results-title">${d.resultsTitle}</h2><div class="stats">${statsBlock(lang)}</div>
 <h3 class="h-s" style="margin-top:88px">${d.resultsSold}</h3>
 <div class="grid-2" style="margin-top:24px">${sold.map((p) => soldItem(lang, p, false)).join('')}</div>
-<p class="on-dark" style="margin-top:40px"><strong style="color:#fff">${d.resultsPartners}:</strong> ${PARTNERS.map((p) => p[lang]).join(comma(lang))}</p></div>
+<h3 class="h-s" style="margin-top:72px">${d.resultsPartners}</h3>${partnersBlock(lang, 'on-dark-logos')}</div>
 </section>
 
 <section class="light pad" aria-labelledby="benefits-title">

@@ -373,3 +373,17 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 .prose p { margin-top: 10px; font-size: 18px; color: var(--slate); }
 .channel svg { color: var(--navy); }
 .light .path-dev .eyebrow, .light .path-dev .more { color: var(--gold); }
+
+/* Partner logo wall: one color, heights balanced per logo */
+.partners { align-items: center; gap: 28px 64px; }
+.partner img { height: var(--h); width: auto; max-width: 100%; filter: none; opacity: 1; }
+.on-dark-logos { justify-content: flex-start; margin-top: 28px; }
+.on-dark-logos .partner img { filter: brightness(0) invert(1); opacity: .9; }
+@media (max-width: 640px) {
+  .partners { gap: 28px 36px; }
+  .partner img { height: calc(var(--h) * .78); }
+}
+.partners { display: grid; grid-template-columns: repeat(6, auto); justify-content: center; justify-items: center; gap: 32px 44px; }
+.on-dark-logos { justify-content: start; }
+@media (max-width: 1100px) { .partners { grid-template-columns: repeat(3, auto); gap: 32px 56px; } }
+@media (max-width: 640px) { .partners { grid-template-columns: repeat(2, auto); gap: 28px 36px; } }

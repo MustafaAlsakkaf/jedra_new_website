@@ -14,15 +14,15 @@ export const SITE = {
   social: { x: '', instagram: '', snapchat: '', tiktok: '', linkedin: '' },
 };
 
-// logo: optional file name in site/assets/partners/ (shown only when the partner has approved its use)
+// logo: file in site/assets/partners/ (single-color, shown only with the partner's approval); h: display height in px, balanced by eye
 export const PARTNERS = [
-  { ar: 'مكين', en: 'Maken', logo: '' },
-  { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera', logo: '' },
-  { ar: 'الرمز', en: 'Alramz', logo: '' },
-  { ar: 'بونساي', en: 'Bonsai', logo: '' },
-  { ar: 'نقش', en: 'Naqsh', logo: '' },
-  { ar: 'الحبيب العقارية', en: 'Al Habib Real Estate', logo: '' },
-];
+  { ar: 'مكين', en: 'Makeen', logo: 'makeen.png', h: 58 },
+  { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera', logo: 'al-ajlan-riviera.png', h: 36 },
+  { ar: 'الرمز', en: 'Alramz', logo: 'alramz.png', h: 46 },
+  { ar: 'بونساي', en: 'Bonsai', logo: 'bonsai.png', h: 66 },
+  { ar: 'نقش', en: 'Naqsh', logo: 'naqsh.png', h: 44 },
+  { ar: 'محمد الحبيب', en: 'Mohammad Al Habib', logo: 'mohammad-al-habib.png', h: 40 },
+]
 
 // status: 'available' or 'sold'. landing: the existing campaign/QR page (Zoho form) for the project.
 // Optional per project: type {ar,en}, price {ar,en} (approved price only), adLicense (REGA ad license no.),
@@ -32,7 +32,7 @@ export const PROJECTS = [
   { slug: 'hoksen', ar: 'هوكسن', en: 'Hoksen', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'available', landing: '/hoksen/submitrequest.html' },
   { slug: 'al-ajlan-riviera-35', ar: 'العجلان ريفييرا 35', en: 'Al Ajlan Riviera 35', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'sold', developer: { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera' } },
   { slug: 'al-ajlan-riviera-49', ar: 'العجلان ريفييرا 49', en: 'Al Ajlan Riviera 49', district: { ar: 'حي الروضة', en: 'Al Rawdah' }, status: 'sold', developer: { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera' } },
-  { slug: 'maken-46', ar: 'مكين 46', en: 'Maken 46', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'sold', developer: { ar: 'مكين', en: 'Maken' } },
+  { slug: 'makeen-46', ar: 'مكين 46', en: 'Makeen 46', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'sold', developer: { ar: 'مكين', en: 'Makeen' } },
   { slug: 'asala-residence', ar: 'أصالة ريزدنس', en: 'Asala Residence', district: { ar: 'حي النهضة', en: 'Al Nahdah' }, status: 'sold' },
 ];
 
@@ -388,7 +388,7 @@ export const T = {
     },
     projectsPage: {
       title: 'Projects | JEDRA',
-      description: 'Residential projects in Riyadh marketed and sold by JEDRA: Bonsai and Hoksen now selling; Al Ajlan Riviera, Maken and Asala Residence sold out.',
+      description: 'Residential projects in Riyadh marketed and sold by JEDRA: Bonsai and Hoksen now selling; Al Ajlan Riviera, Makeen and Asala Residence sold out.',
       h1: 'Projects.',
       lead: 'Residential projects in north and east Riyadh with leading developers.',
       filterLabel: 'Show projects',
