@@ -43,6 +43,13 @@
     play();
   });
 
+  // "Talk to an advisor" buttons go to the form on the current page when there is one
+  const pageForm = document.querySelector('.contact-split');
+  if (pageForm) {
+    const target = '#' + pageForm.closest('section').id;
+    document.querySelectorAll('[data-to-form]').forEach((a) => { a.href = target; });
+  }
+
   // Highlights rail arrows
   document.querySelectorAll('[data-rail]').forEach((wrap) => {
     const rail = wrap.querySelector('.rail');
@@ -148,6 +155,7 @@
       const marketing = form.querySelector('input[name="marketing_consent"]');
       if (marketing) data.set('marketing_consent', marketing.checked ? 'yes' : 'no');
       const type = data.get('request_type') || '';
+      const typeKey = keyOf('request_type');
       data.append('access_key', form.dataset.key);
       data.append('subject', `${form.dataset.subject} | ${type}${data.get('project') ? ' | ' + data.get('project') : ''}`);
       data.append('from_name', 'JEDRA website');
@@ -162,6 +170,15 @@
         if (!json.success) throw new Error(json.message || 'failed');
         status.textContent = form.dataset.success;
         status.className = 'form-status ok';
+        // Brochure requests get the file right after the lead is saved
+        if (typeKey === 'brochure' && form.dataset.brochure) {
+          status.textContent = form.dataset.brochureReady + ' ';
+          const a = document.createElement('a');
+          a.href = form.dataset.brochure; a.target = '_blank'; a.rel = 'noopener'; a.className = 'more';
+          a.textContent = form.dataset.brochureLink;
+          status.append(a);
+          track('brochure_download', { project: data.get('project') || '' });
+        }
         track('generate_lead', { form_name: form.dataset.lead, request_type: type, project: data.get('project') || '' });
         form.reset();
         syncType();

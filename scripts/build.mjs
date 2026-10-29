@@ -64,6 +64,7 @@ const ICONS = {
   target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
   phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   pin: '<path d="M12 21s7-6.1 7-12a7 7 0 0 0-14 0c0 5.9 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
   check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
@@ -151,12 +152,12 @@ function header(lang, page) {
 <nav class="nav" aria-label="${esc(n.primary)}">${navLinks}${careers}</nav>
 <div class="header-tools">
 <a class="lang" href="${switchHref}" hreflang="${other(lang)}" lang="${other(lang)}" aria-label="${esc(n.switchAria)}">${n.switchLabel}</a>
-<a class="btn btn-gold header-cta" href="${href(lang, '/contact/')}">${n.cta}</a>
+<a class="btn btn-gold header-cta" href="${href(lang, '/contact/')}" data-to-form>${n.cta}</a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="${esc(n.menu)}" data-open="${esc(n.menu)}" data-close="${esc(n.close)}">${icon('menu', 'i-open')}${icon('close', 'i-close')}</button>
 </div>
 </div>
 </header>
-<nav class="mobile-nav" id="mobile-nav" aria-label="${esc(n.primary)}">${navLinks}${careers}<a href="${href(lang, '/contact/')}">${n.contact}</a><a class="btn btn-gold" href="${wa(t.waText)}" data-loc="menu">${t.cta.whatsapp}</a></nav>`;
+<nav class="mobile-nav" id="mobile-nav" aria-label="${esc(n.primary)}">${navLinks}${careers}<a href="${href(lang, '/contact/')}">${n.contact}</a>${SITE.directContact ? `<a class="btn btn-gold" href="${wa(t.waText)}" data-loc="menu">${t.cta.whatsapp}</a>` : `<a class="btn btn-gold" href="${href(lang, '/contact/')}" data-to-form>${n.cta}</a>`}</nav>`;
 }
 
 function footer(lang, page) {
@@ -174,7 +175,7 @@ ${crumbs}
 <div><a class="footer-logo" href="${href(lang, '/')}" aria-label="${esc(n.homeAria)}">${logo(lang, 'light')}</a><p>${f.tagline}</p>${socialHtml}</div>
 <div><h2>${f.company}</h2><ul><li><a href="${href(lang, '/about/')}">${n.about}</a></li><li><a href="${href(lang, '/properties/')}">${n.projects}</a></li><li><a href="/newhires.html">${n.careers}</a></li></ul></div>
 <div><h2>${f.services}</h2><ul><li><a href="${href(lang, '/developers/')}">${n.developers}</a></li><li><a href="${href(lang, '/properties/')}">${f.buyers}</a></li><li><a href="${href(lang, '/international/')}">${n.international}</a></li></ul></div>
-<div><h2>${f.contact}</h2><div class="social contact-icons"><a href="tel:${SITE.phone}" data-loc="footer" aria-label="${esc(t.actions.call)} ${SITE.phoneDisplay}" title="${SITE.phoneDisplay}">${icon('phone', '')}</a><a href="${wa(t.waText)}" data-loc="footer" aria-label="${esc(t.actions.whatsapp)}" title="${esc(t.actions.whatsapp)}">${WA_SVG}</a><a href="mailto:${SITE.email}" aria-label="${SITE.email}" title="${SITE.email}">${icon('mail', '')}</a></div><ul style="margin-top:16px"><li><a href="${href(lang, '/contact/')}">${n.contact}</a></li></ul></div>
+<div><h2>${f.contact}</h2><div class="social contact-icons">${SITE.directContact ? `<a href="tel:${SITE.phone}" data-loc="footer" aria-label="${esc(t.actions.call)} ${SITE.phoneDisplay}" title="${SITE.phoneDisplay}">${icon('phone', '')}</a><a href="${wa(t.waText)}" data-loc="footer" aria-label="${esc(t.actions.whatsapp)}" title="${esc(t.actions.whatsapp)}">${WA_SVG}</a>` : ''}<a href="mailto:${SITE.email}" aria-label="${SITE.email}" title="${SITE.email}">${icon('mail', '')}</a></div><ul style="margin-top:16px"><li><a href="${href(lang, '/contact/')}">${n.contact}</a></li></ul></div>
 </div>
 <div class="footer-bottom">
 <span>© ${SITE.year} ${t.brandFull}. ${f.rights}</span>
@@ -182,11 +183,11 @@ ${crumbs}
 </div>
 </div>
 </footer>
-<a class="wa-float" href="${wa(t.waText)}" aria-label="${esc(t.actions.whatsappAria)}" data-loc="float">${WA_SVG}</a>
+${SITE.directContact ? `<a class="wa-float" href="${wa(t.waText)}" aria-label="${esc(t.actions.whatsappAria)}" data-loc="float">${WA_SVG}</a>
 <nav class="action-bar" aria-label="${esc(t.actions.bar)}">
 <a class="action-call" href="tel:${SITE.phone}" data-loc="bar">${icon('phone', '')}${t.actions.call}</a>
 <a class="action-wa" href="${wa(t.waText)}" data-loc="bar">${WA_SVG}${t.actions.whatsapp}</a>
-</nav>
+</nav>` : `<nav class="action-bar single" aria-label="${esc(t.actions.bar)}"><a class="action-wa" href="${href(lang, '/contact/')}" data-to-form>${n.cta}</a></nav>`}
 <script src="/assets/main.js?v=${BUILD.js}" defer></script>
 </body>
 </html>`;
@@ -228,7 +229,7 @@ function soldItem(lang, p, linked = true) {
 function leadForm(lang, { type = 'general', project = null, interest = '', name = 'website' } = {}) {
   const t = T[lang];
   const f = t.form;
-  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}" data-need-fields="${esc(f.needFields)}"`;
+  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}" data-need-fields="${esc(f.needFields)}"${project && project.brochure ? ` data-brochure="/assets/brochures/${esc(project.brochure)}" data-brochure-ready="${esc(f.brochureReady)}" data-brochure-link="${esc(f.brochureLink)}"` : ''}`;
   const hidden = `<input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="language" value="${lang}">${interest ? `<input type="hidden" name="interest" value="${esc(interest)}">` : ''}`;
   const id = (x) => `${name}-${x}`;
   const field = (key, label, input, { full = false, w = '' } = {}) => `<div class="field${full ? ' full' : ''}"${when(w)}><label for="${id(key)}">${label}</label>${input}</div>`;
@@ -238,12 +239,15 @@ function leadForm(lang, { type = 'general', project = null, interest = '', name 
   const picks = { ...Object.fromEntries(available.map((p) => [p.slug, p[lang]])), help: f.projectHelp };
   const pickDefault = project && project.status === 'available' ? project.slug : 'help';
   const BUYER = 'request_type=project visit';
+  const types = project && project.brochure ? { project: f.types.project, visit: f.types.visit, brochure: f.brochureType, developer: f.types.developer, general: f.types.general } : f.types;
+  const submitFor = (k) => (k === 'developer' ? f.submitDev : k === 'brochure' ? f.submitBrochure : f.submit);
   // Render the initial visibility so the form is right before the script runs
   const state = { request_type: type, project: pickDefault };
   const shown = (w) => w.split(';').every((c) => { const [n, v] = c.split('='); return v.split(' ').includes(state[n]); });
   const when = (w) => (w ? ` data-when="${w}"${shown(w) ? '' : ' hidden'}` : '');
   return `<form class="form" ${attrs} novalidate>${hidden}
-${chips('request_type', f.requestType, f.types, type, '', (k) => ` data-submit="${esc(k === 'developer' ? f.submitDev : f.submit)}"`)}
+${chips('request_type', f.requestType, types, type, '', (k) => ` data-submit="${esc(submitFor(k))}"`)}
+${project ? `<div${when('request_type=brochure')}><input type="hidden" name="project" value="${esc(project[lang])}"></div>` : ''}
 ${field('name', f.name, `<input id="${id('name')}" name="name" type="text" autocomplete="name" placeholder="${esc(f.namePh)}" required>`)}
 ${field('phone', f.phone, `<input id="${id('phone')}" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="${esc(f.phonePh)}" required>`)}
 ${field('company', f.company, `<input id="${id('company')}" name="company" type="text" autocomplete="organization" required>`, { w: 'request_type=developer' })}
@@ -254,11 +258,11 @@ ${field('budget', `${f.budget} ${opt}`, `<select id="${id('budget')}" name="budg
 ${chips('visit_time', f.visitTime, f.visitTimes, 'evening', 'request_type=visit')}
 ${chips('project_type', f.projectType, f.projectTypes, 'residential', 'request_type=developer')}
 ${field('units', f.units, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1" required>`, { w: 'request_type=developer' })}
-${chips('contact_by', f.contactBy, f.contactWays, 'call', 'request_type=project visit general')}
+${chips('contact_by', f.contactBy, f.contactWays, 'call', 'request_type=project visit general brochure')}
 ${field('message', `${f.message} ${opt}`, `<textarea id="${id('message')}" name="message" rows="3" placeholder="${esc(f.messagePh)}"></textarea>`, { full: true })}
 <label class="consent full"><input type="checkbox" name="consent" value="yes" required><span>${f.consent(href(lang, '/privacy/'))}</span></label>
 <label class="consent full optional"><input type="checkbox" name="marketing_consent" value="yes"><span>${f.marketing}</span></label>
-<button class="btn btn-navy full" type="submit">${type === 'developer' ? f.submitDev : f.submit}</button><p class="form-status" role="status" aria-live="polite"></p>
+<button class="btn btn-navy full" type="submit">${submitFor(type)}</button><p class="form-status" role="status" aria-live="polite"></p>
 </form>`;
 }
 function contactSection(lang, { type = 'general', name = 'contact', interest = '', project = null, title, lead, id = 'contact', tone = 'light', after = '' } = {}) {
@@ -269,13 +273,14 @@ function contactSection(lang, { type = 'general', name = 'contact', interest = '
 ${heading}
 <div class="contact-split">
 <div class="contact-form">${leadForm(lang, { type, name, interest, project })}${after}</div>
-<aside class="contact-aside" aria-label="${esc(h.contactDirect)}">
-<h3>${h.contactDirect}</h3>
+<aside class="contact-aside" aria-label="${esc(SITE.directContact ? h.contactDirect : h.afterTitle)}">
+${SITE.directContact ? `<h3>${h.contactDirect}</h3>
 <div class="channels">
 <a class="channel" href="${wa(project ? t.project.waText(project[lang]) : t.waText)}" data-loc="${name}">${WA_SVG}<span>${t.actions.whatsapp}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
 <a class="channel" href="tel:${SITE.phone}" data-loc="${name}">${icon('phone', '')}<span>${t.actions.call}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
 <a class="channel" href="mailto:${SITE.email}">${icon('mail', '')}<span>${t.form.email}<small class="ltr">${SITE.email}</small></span></a>
-</div>
+</div>` : `<h3>${h.afterTitle}</h3>
+<ol class="after-steps">${h.afterSteps.map((x) => `<li>${x}</li>`).join('')}</ol>`}
 <p class="aside-legal">${t.footer.fal} <span class="ltr">${SITE.falLicense}</span><br>${t.footer.unified} <span class="ltr">${SITE.unifiedNumber}</span></p>
 </aside>
 </div></div></section>`;
@@ -370,7 +375,7 @@ ${contactSection(lang, { name: 'home' })}
     '@context': 'https://schema.org', '@type': 'RealEstateAgent',
     name: t.brandFull, alternateName: lang === 'ar' ? 'JEDRA' : 'جيدرا',
     url: SITE.url + href(lang, '/'), logo: `${SITE.url}/assets/brand/logo-${lang}-dark.png`, image: `${SITE.url}/assets/og-${lang}.png`,
-    telephone: SITE.phone, email: SITE.email,
+    ...(SITE.directContact ? { telephone: SITE.phone } : {}), email: SITE.email,
     address: { '@type': 'PostalAddress', streetAddress: lang === 'ar' ? 'طريق أنس بن مالك، حي الياسمين' : 'Anas Ibn Malik Road, Al Yasmin', addressLocality: lang === 'ar' ? 'الرياض' : 'Riyadh', postalCode: '13326', addressCountry: 'SA' },
     areaServed: { '@type': 'City', name: lang === 'ar' ? 'الرياض' : 'Riyadh' },
     identifier: [{ '@type': 'PropertyValue', name: 'FAL', value: SITE.falLicense }, { '@type': 'PropertyValue', name: 'Unified National Number', value: SITE.unifiedNumber }],
@@ -455,16 +460,29 @@ function projectPage(lang, p) {
   const c = t.project;
   const name = p[lang];
   const available = p.status === 'available';
+  const has = (k) => p[k] && p[k][lang];
   const facts = [
     p.developer ? [c.developer, p.developer[lang]] : null,
     [c.location, t.city(p.district[lang])],
-    p.type ? [c.type, p.type[lang]] : null,
-    available ? [c.price, p.price ? p.price[lang] : `<a class="more" href="#request">${c.priceOnRequest}</a>`] : null,
+    has('type') ? [c.type, p.type[lang]] : null,
+    has('area') ? [c.area, p.area[lang]] : null,
+    has('bedrooms') ? [c.bedrooms, p.bedrooms[lang]] : null,
+    has('delivery') ? [c.delivery, p.delivery[lang]] : null,
+    available ? [c.price, has('price') ? p.price[lang] : `<a class="more" href="#request" data-pick="project">${c.priceOnRequest}</a>`] : null,
     [c.status, t.status[p.status]],
     p.adLicense ? [c.adLicense, `<span class="ltr">${p.adLicense}</span>`] : null,
   ].filter(Boolean);
+  const brochure = available && p.brochure;
   const crumbs = [[t.nav.projects, '/properties/'], [name, `/properties/${p.slug}/`]];
-  const productBar = available ? `<div class="subnav"><div class="wrap"><p class="subnav-title">${name}</p><div class="subnav-end"><a class="more sub-wa" href="${wa(c.waText(name))}" data-loc="project-bar">${t.actions.whatsapp}</a><a class="btn btn-gold" href="#request">${t.cta.details}</a></div></div></div>` : '';
+  const productBar = available ? `<div class="subnav"><div class="wrap"><p class="subnav-title">${name}</p><div class="subnav-end">${brochure ? `<a class="more" href="#request" data-pick="brochure">${c.brochureTitle}</a>` : ''}<a class="btn btn-gold" href="#request" data-pick="project">${t.cta.details}</a></div></div></div>` : '';
+  const nearby = p.nearby && p.nearby.length ? `<section class="light pad-s" aria-labelledby="nearby-title"><div class="wrap">
+<h2 class="h-m" id="nearby-title">${c.nearbyTitle}</h2>
+<ul class="nearby" role="list">${p.nearby.map((x) => `<li><span class="nearby-time">${c.minutes(x.min)}</span><span class="nearby-place">${x[lang]}</span><span class="nearby-note">${c.byCar}</span></li>`).join('')}</ul>
+</div></section>` : '';
+  const brochureBlock = brochure ? `<section class="light pad-s" style="padding-top:0"><div class="wrap"><div class="brochure-card">
+<div>${icon('doc', 'icon')}<h2 class="h-s">${c.brochureTitle}</h2><p>${c.brochureText}</p></div>
+<a class="btn btn-navy" href="#request" data-pick="brochure">${t.form.submitBrochure}</a>
+</div></div></section>` : '';
   const body = `${productBar}<main id="main">
 <section class="dark hero pad-s" style="padding-bottom:${p.cover ? 0 : 88}px">
 ${img('pattern-line', '', { cls: 'bg-img dim' })}
@@ -473,12 +491,14 @@ ${img('pattern-line', '', { cls: 'bg-img dim' })}
 <h1 class="h-xl" style="margin-top:18px">${name}</h1>
 <p class="lead on-dark" style="margin-top:18px">${available ? c.availableLead(name) : c.soldLead(name)}</p>
 <div class="btn-row" style="margin-top:32px">${available
-    ? `<a class="btn btn-gold" href="#request">${t.cta.details}</a><a class="btn btn-outline" href="#request" data-pick="visit">${t.cta.visit}</a><a class="more" href="${wa(c.waText(name))}" data-loc="project">${t.cta.whatsapp}</a>`
-    : `<a class="btn btn-gold" href="${href(lang, '/properties/')}">${t.cta.explore}</a><a class="more" href="${wa(t.waText)}" data-loc="project">${t.cta.whatsapp}</a>`}</div>
+    ? `<a class="btn btn-gold" href="#request" data-pick="project">${t.cta.details}</a><a class="btn btn-outline" href="#request" data-pick="visit">${t.cta.visit}</a>${brochure ? `<a class="more" href="#request" data-pick="brochure">${c.brochureTitle}</a>` : ''}`
+    : `<a class="btn btn-gold" href="${href(lang, '/properties/')}">${t.cta.explore}</a>`}</div>
 </div>
 ${p.cover ? `<div class="wide hero-media over">${img(p.cover, c.photoAlt(name), { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div>` : ''}
 </section>
 <section class="light pad-s"><div class="wrap"><dl class="facts" style="margin-top:0">${facts.map(([k, v]) => `<div class="fact"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div></section>
+${brochureBlock}
+${nearby}
 ${available
     ? contactSection(lang, { type: 'project', name: 'project', project: p, id: 'request', tone: 'mist', title: c.formTitle, lead: c.formLead, after: p.landing ? `<p class="muted waitlist">${c.waitlistText} <a class="more" href="${p.landing}">${t.cta.waitlist}</a></p>` : '' })
     : contactSection(lang, { type: 'project', name: 'project-sold', project: p, tone: 'mist', title: c.soldTitle, lead: c.soldText })}
@@ -522,7 +542,7 @@ function internationalPage(lang) {
   const crumbs = [[t.nav.international, '/international/']];
   const body = `<main id="main">
 <section class="dark hero center"><div class="wrap"><p class="eyebrow">${i.eyebrow}</p><h1 class="h-xl" style="margin-top:12px">${i.h1}</h1><p class="lead on-dark">${i.lead}</p>
-<div class="btn-row"><a class="btn btn-gold" href="#contact">${i.cta}</a><a class="btn btn-outline" href="${wa(t.waText)}" data-loc="international">${t.cta.whatsapp}</a></div></div>
+<div class="btn-row"><a class="btn btn-gold" href="#contact">${i.cta}</a>${SITE.directContact ? `<a class="btn btn-outline" href="${wa(t.waText)}" data-loc="international">${t.cta.whatsapp}</a>` : ''}</div></div>
 <div class="wide hero-media">${img(INTL.img, INTL.alt[lang], { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div></section>
 <section class="light pad"><div class="wrap"><h2 class="h-l center">${i.pointsTitle}</h2>
 <div class="grid-3 features" style="margin-top:56px;gap:40px 28px">${cards(i.points, 'feature')}</div></div></section>

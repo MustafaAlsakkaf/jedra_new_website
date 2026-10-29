@@ -453,3 +453,21 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 .slide-dots button { width: 10px; height: 10px; padding: 0; border: 0; border-radius: 5px; background: rgba(255, 255, 255, .45); cursor: pointer; transition: width .3s, background .3s; }
 .slide-dots button[aria-current="true"] { width: 28px; background: var(--gold); }
 @media (prefers-reduced-motion: reduce) { .slide, .slide img { transition: none; } .slide.is-active img { transform: none; } }
+
+/* Forms-first contact: what happens next, single mobile button */
+.after-steps { list-style: none; margin: 18px 0 0; padding: 0; counter-reset: step; display: grid; gap: 14px; }
+.after-steps li { counter-increment: step; display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: var(--radius-m); background: rgba(255, 255, 255, .07); font-size: 16px; line-height: 1.6; }
+.after-steps li::before { content: counter(step); flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: var(--navy); font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+@media (max-width: 760px) { .action-bar.single { grid-template-columns: 1fr; } }
+
+/* Project details: nearby places and brochure */
+.nearby { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.nearby li { background: var(--mist); border-radius: var(--radius-m); padding: 24px; display: flex; flex-direction: column; gap: 4px; }
+.nearby-time { font-size: 34px; font-weight: 900; line-height: 1.1; }
+.nearby-place { font-weight: 700; font-size: 17px; }
+.nearby-note { color: var(--slate); font-size: 14px; }
+@media (max-width: 760px) { .nearby { grid-template-columns: minmax(0, 1fr); } }
+.brochure-card { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; background: var(--mist); border-radius: var(--radius-l); padding: clamp(24px, 4vw, 40px); }
+.brochure-card .icon { width: 32px; height: 32px; color: var(--navy); }
+.brochure-card h2 { margin-top: 10px; }
+.brochure-card p { color: var(--slate); margin-top: 6px; }

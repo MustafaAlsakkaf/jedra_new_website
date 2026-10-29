@@ -13,6 +13,8 @@ export const SITE = {
   // Social links: add the full URL to show the icon in the footer, leave empty to hide it.
   social: { x: 'https://x.com/jedrahq', instagram: 'https://www.instagram.com/jedrahq', snapchat: 'https://www.snapchat.com/add/jedrahq', tiktok: 'https://www.tiktok.com/@jedrahq', linkedin: 'https://www.linkedin.com/company/jedrahq' },
   founded: 2025,
+  // false: no call or WhatsApp buttons on the site; every request goes through the forms to the sales team (Zoho).
+  directContact: false,
 };
 
 // logo: file in site/assets/partners/ (single-color, shown only with the partner's approval); h: display height in px, balanced by eye
@@ -27,10 +29,18 @@ export const PARTNERS = [
 
 // status: 'available' or 'sold'. landing: the existing campaign/QR page (Zoho form) for the project.
 // Optional per project: type {ar,en}, price {ar,en} (approved price only), adLicense (REGA ad license no.),
-// developer {ar,en}, mapUrl, cover: photo name in site/assets/img/ (<name>-800.webp and a larger size).
+// developer {ar,en}, cover: photo name in site/assets/img/ (<name>-800.webp and a larger size),
+// area {ar,en}, bedrooms {ar,en}, delivery {ar,en}, nearby: [{ar,en,min}],
+// brochure: PDF file name in site/assets/brochures/ (sent after the visitor leaves name and phone).
 export const PROJECTS = [
   { slug: 'bonsai', ar: 'بونساي', en: 'Bonsai', district: { ar: 'حي النهضة', en: 'Al Nahdah' }, status: 'available', landing: '/submitrequest.html', cover: 'project-bonsai' },
-  { slug: 'hoksen', ar: 'هوكسن', en: 'Hoksen', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'available', landing: '/hoksen/submitrequest.html', cover: 'project-hoksen' },
+  { slug: 'hoksen', ar: 'هوكسن', en: 'Hoksen', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'available', landing: '/hoksen/submitrequest.html', cover: 'project-hoksen',
+    developer: { ar: 'نقش للاستثمار', en: 'Naqsh Investment' },
+    nearby: [
+      { ar: 'جامعة الأميرة نورة', en: 'Princess Nourah University', min: 7 },
+      { ar: 'جامعة الإمام محمد بن سعود', en: 'Imam Mohammad Ibn Saud University', min: 11 },
+      { ar: 'مستشفى المملكة', en: 'Kingdom Hospital', min: 11 },
+    ] },
   { slug: 'al-ajlan-riviera-35', ar: 'العجلان ريفييرا 35', en: 'Al Ajlan Riviera 35', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'sold', developer: { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera' } },
   { slug: 'al-ajlan-riviera-49', ar: 'العجلان ريفييرا 49', en: 'Al Ajlan Riviera 49', district: { ar: 'حي الروضة', en: 'Al Rawdah' }, status: 'sold', developer: { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera' } },
   { slug: 'makeen-46', ar: 'مكين 46', en: 'Makeen 46', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'sold', developer: { ar: 'مكين', en: 'Makeen' } },
@@ -91,8 +101,10 @@ export const T = {
       careersTile: { eyebrow: 'الوظائف', title: 'ابنِ مسيرتك المهنية في القطاع العقاري.' },
       intlTile: { eyebrow: 'العملاء الدوليون', title: 'استثمر في السعودية.', text: 'فريق مخصص يرافقك في التملك والاستثمار العقاري في المملكة، من أي مكان في العالم.', ctaEn: 'Explore in English' },
       contactTitle: 'تحدث مع جيدرا.',
-      contactLead: 'اختر نوع طلبك واترك بياناتك، وسيتواصل معك الفريق المختص. أو تواصل معنا مباشرة.',
+      contactLead: 'اختر نوع طلبك واترك بياناتك، ويصل طلبك مباشرة إلى الفريق المختص.',
       contactDirect: 'تواصل مباشر',
+      afterTitle: 'بعد إرسال طلبك',
+      afterSteps: ['يصل طلبك مباشرة إلى الفريق المختص.', 'يتواصل معك مستشار بالطريقة التي تفضّلها.', 'نرسل لك التفاصيل والأسعار، أو نرتّب لك موعداً.'],
     },
     method: [
       { icon: 'headset', title: 'مركز اتصال', text: 'يرد على كل استفسار ويؤهل كل عميل محتمل.' },
@@ -161,6 +173,9 @@ export const T = {
     project: {
       developer: 'المطوّر', location: 'الموقع', status: 'الحالة', type: 'نوع الوحدات', price: 'السعر', adLicense: 'رقم ترخيص الإعلان',
       priceOnRequest: 'اطلب السعر',
+      area: 'المساحات', bedrooms: 'غرف النوم', delivery: 'موعد التسليم',
+      nearbyTitle: 'قريب من كل ما تحتاجه.', minutes: (n) => `${n} ${n >= 3 && n <= 10 ? 'دقائق' : 'دقيقة'}`, byCar: 'بالسيارة',
+      brochureTitle: 'بروشور المشروع', brochureText: 'المخططات والمواصفات والتفاصيل الكاملة في ملف واحد.',
       photoAlt: (p) => `تصور معماري لمشروع ${p}`,
       availableLead: (p) => `${p} متاح للبيع الآن عبر جيدرا. اطلب التفاصيل أو احجز زيارة، وسيتواصل معك مستشار بمعلومات الوحدات والأسعار.`,
       soldLead: (p) => `${p} من المشاريع التي تولّت جيدرا تسويقها وبيعها بالشراكة مع المطوّر.`,
@@ -222,7 +237,7 @@ export const T = {
       title: 'تواصل معنا | جيدرا',
       description: 'تواصل مع جيدرا للوساطة العقارية في الرياض عبر الهاتف أو واتساب أو البريد الإلكتروني، أو اترك طلبك ليتواصل معك الفريق المختص.',
       h1: 'تواصل معنا.',
-      lead: 'اختر نوع طلبك، وسيتواصل معك الفريق المختص. أو تواصل معنا مباشرة.',
+      lead: 'اختر نوع طلبك واترك بياناتك، ويصل طلبك مباشرة إلى الفريق المختص.',
       direct: 'تواصل مباشر',
       company: 'بيانات الشركة',
     },
@@ -232,6 +247,8 @@ export const T = {
       email: 'البريد الإلكتروني', optional: '(اختياري)',
       requestType: 'نوع الطلب',
       types: { project: 'استفسار عن مشروع', visit: 'طلب زيارة', developer: 'خدمات المطورين', general: 'استفسار عام' },
+      brochureType: 'طلب البروشور', submitBrochure: 'احصل على البروشور',
+      brochureReady: 'وصلنا طلبك، والبروشور جاهز:', brochureLink: 'حمّل البروشور (PDF)',
       projectSel: 'المشروع الذي يهمك', projectHelp: 'ساعدني في الاختيار',
       unitType: 'نوع الوحدة', unitTypes: { apartment: 'شقة', townhouse: 'تاون هاوس', floor: 'دور', villa: 'فيلا' },
       budget: 'الميزانية التقريبية', budgetAny: 'اختر الميزانية', budgets: ['أقل من مليون ريال', 'من 1 إلى 2 مليون ريال', 'من 2 إلى 3 ملايين ريال', 'أكثر من 3 ملايين ريال'],
@@ -355,8 +372,10 @@ export const T = {
       careersTile: { eyebrow: 'Careers', title: 'Build your career in real estate.' },
       intlTile: { eyebrow: 'International clients', title: 'Invest in Saudi Arabia.', text: 'A dedicated team to guide you in buying and investing in Saudi real estate, from anywhere in the world.', ctaEn: 'Learn more' },
       contactTitle: 'Talk to JEDRA.',
-      contactLead: 'Choose your request type and leave your details, and the right team will contact you. Or reach us directly.',
+      contactLead: 'Choose your request type and leave your details, and your request goes straight to the right team.',
       contactDirect: 'Reach us directly',
+      afterTitle: 'After you send your request',
+      afterSteps: ['Your request goes straight to the right team.', 'An advisor contacts you the way you prefer.', 'We send you details and prices, or arrange a meeting or visit.'],
     },
     method: [
       { icon: 'headset', title: 'Call center', text: 'Answers every inquiry and qualifies every lead.' },
@@ -425,6 +444,9 @@ export const T = {
     project: {
       developer: 'Developer', location: 'Location', status: 'Status', type: 'Unit types', price: 'Price', adLicense: 'Ad license no.',
       priceOnRequest: 'Request the price',
+      area: 'Areas', bedrooms: 'Bedrooms', delivery: 'Delivery',
+      nearbyTitle: 'Close to everything you need.', minutes: (n) => `${n} min`, byCar: 'by car',
+      brochureTitle: 'Project brochure', brochureText: 'Floor plans, specifications and full details in one file.',
       photoAlt: (p) => `Architectural rendering of ${p}`,
       availableLead: (p) => `${p} is now selling through JEDRA. Request details or book a visit, and an advisor will contact you with unit information and prices.`,
       soldLead: (p) => `${p} is one of the projects JEDRA has marketed and sold in partnership with the developer.`,
@@ -486,7 +508,7 @@ export const T = {
       title: 'Contact | JEDRA',
       description: 'Contact JEDRA Real Estate Brokerage in Riyadh by phone, WhatsApp or email, or send your request and the right team will contact you.',
       h1: 'Contact us.',
-      lead: 'Choose your request type and the right team will contact you. Or reach us directly.',
+      lead: 'Choose your request type and leave your details, and your request goes straight to the right team.',
       direct: 'Reach us directly',
       company: 'Company details',
     },
@@ -496,6 +518,8 @@ export const T = {
       email: 'Email', optional: '(optional)',
       requestType: 'Request type',
       types: { project: 'Project inquiry', visit: 'Visit request', developer: 'Developer services', general: 'General inquiry' },
+      brochureType: 'Get the brochure', submitBrochure: 'Get the brochure',
+      brochureReady: 'Request received. Your brochure is ready:', brochureLink: 'Download the brochure (PDF)',
       projectSel: 'Project you are interested in', projectHelp: 'Help me choose',
       unitType: 'Unit type', unitTypes: { apartment: 'Apartment', townhouse: 'Townhouse', floor: 'Floor', villa: 'Villa' },
       budget: 'Approximate budget', budgetAny: 'Select a budget', budgets: ['Under SAR 1 million', 'SAR 1 to 2 million', 'SAR 2 to 3 million', 'Over SAR 3 million'],
