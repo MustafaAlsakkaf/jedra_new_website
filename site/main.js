@@ -15,6 +15,34 @@
     document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
   }
 
+  // Home hero: rotate through the available projects; pause on hover or focus; no autoplay for reduced motion
+  document.querySelectorAll('[data-slides]').forEach((wrap) => {
+    const slides = [...wrap.querySelectorAll('.slide')];
+    const dots = [...wrap.querySelectorAll('.slide-dots button')];
+    if (slides.length < 2) return;
+    let i = 0;
+    let timer = null;
+    const show = (n) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => {
+        const on = k === i;
+        s.classList.toggle('is-active', on);
+        if (on) { s.removeAttribute('aria-hidden'); s.removeAttribute('tabindex'); } else { s.setAttribute('aria-hidden', 'true'); s.setAttribute('tabindex', '-1'); }
+      });
+      dots.forEach((d, k) => (k === i ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
+    };
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const play = () => { if (!still) { clearInterval(timer); timer = setInterval(() => show(i + 1), 6000); } };
+    const stop = () => clearInterval(timer);
+    dots.forEach((d, k) => d.addEventListener('click', () => { show(k); play(); }));
+    wrap.addEventListener('mouseenter', stop);
+    wrap.addEventListener('mouseleave', play);
+    wrap.addEventListener('focusin', stop);
+    wrap.addEventListener('focusout', play);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : play()));
+    play();
+  });
+
   // Highlights rail arrows
   document.querySelectorAll('[data-rail]').forEach((wrap) => {
     const rail = wrap.querySelector('.rail');

@@ -299,7 +299,7 @@ function homePage(lang) {
 <ul class="checks">${x.points.map((pt) => `<li>${icon('check', '')}${pt}</li>`).join('')}</ul>
 <div class="btn-row"><a class="btn ${x.key === 'dev' ? 'btn-gold' : 'btn-navy'}" href="${href(lang, x.ctaHref)}">${t.cta[x.cta]}</a><a class="more" href="${href(lang, x.cta2Href)}">${t.cta[x.cta2]}</a></div>
 </article>`;
-  const heroProject = PROJECTS.find((p) => p.status === 'available' && p.cover);
+  const heroProjects = PROJECTS.filter((p) => p.status === 'available' && p.cover);
   const body = `<main id="main">
 <section class="dark hero center">
 <div class="wrap">
@@ -307,7 +307,13 @@ function homePage(lang) {
 <p class="lead on-dark">${h.lead}</p>
 <div class="btn-row"><a class="btn btn-gold" href="${href(lang, '/properties/')}">${t.cta.explore}</a><a class="btn btn-outline" href="${href(lang, '/developers/')}">${t.cta.devSolutions}</a></div>
 </div>
-${heroProject ? `<figure class="wide hero-media">${img(heroProject.cover, T[lang].project.photoAlt(heroProject[lang]), { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}<figcaption><a class="more" href="${projectUrl(lang, heroProject)}">${h.heroCaption(heroProject[lang], heroProject.district[lang])}</a></figcaption></figure>` : ''}
+${heroProjects.length ? `<div class="wide hero-media hero-slides" data-slides>
+<div class="slides">${heroProjects.map((p, i) => `<a class="slide${i === 0 ? ' is-active' : ''}" href="${projectUrl(lang, p)}"${i ? ' aria-hidden="true" tabindex="-1"' : ''}>
+${img(p.cover, t.project.photoAlt(p[lang]), { sizes: '(max-width: 1400px) 100vw, 1400px', eager: i === 0 })}
+<span class="slide-info"><span class="badge badge-available">${t.status.available}</span><span class="slide-name">${p[lang]}</span><span class="slide-meta">${t.city(p.district[lang])}</span><span class="slide-more">${t.cta.viewProject}</span></span>
+</a>`).join('')}</div>
+${heroProjects.length > 1 ? `<div class="slide-dots" role="group" aria-label="${esc(t.home.projectsTitle)}">${heroProjects.map((p, i) => `<button type="button" aria-label="${esc(p[lang])}"${i === 0 ? ' aria-current="true"' : ''}></button>`).join('')}</div>` : ''}
+</div>` : ''}
 </section>
 
 <section class="light pad" aria-labelledby="paths-title">

@@ -69,7 +69,6 @@ export const T = {
       description: 'جيدرا للوساطة العقارية: نجمع بين الخبرة العقارية وإدارة المبيعات والتقنية لنساعد المطورين على تسويق مشاريعهم ونمنح المشترين والمستثمرين تجربة أوضح.',
       h1: 'نصل بالمشاريع العقارية إلى مُلّاكها.',
       lead: 'وساطة وإدارة مبيعات عقارية يقودها فريق متخصص وتدعمها التقنية والبيانات. نعمل مع نخبة المطورين في المملكة، ونرافق كل مستثمر حتى يتملّك بثقة.',
-      heroCaption: (p, d) => `${p}، ${d}. متاح للبيع الآن`,
       pathsTitle: 'كيف نخدمك؟',
       paths: [
         { key: 'dev', eyebrow: 'للمطورين العقاريين', title: 'منظومة تسويق وبيع كاملة لمشروعك.', points: ['دراسة المشروع وتخطيط التسويق', 'فريق مبيعات ومركز اتصال', 'متابعة كل عميل عبر CRM وتقارير واضحة'], cta: 'devSolutions', ctaHref: '/developers/', cta2: 'discuss', cta2Href: '/developers/#meet' },
@@ -334,7 +333,6 @@ export const T = {
       description: 'JEDRA Real Estate Brokerage combines real estate expertise, sales management and technology to help developers sell their projects and give buyers and investors a clearer experience.',
       h1: 'Bringing real estate projects to their owners.',
       lead: 'Real estate brokerage and sales management, led by a specialist team and powered by technology and data. We work with leading developers in Saudi Arabia and guide every investor to ownership with confidence.',
-      heroCaption: (p, d) => `${p}, ${d}. Now selling`,
       pathsTitle: 'How can we help?',
       paths: [
         { key: 'dev', eyebrow: 'For developers', title: 'A complete marketing and sales system for your project.', points: ['Project study and marketing plan', 'Sales team and call center', 'Every lead tracked in CRM, with clear reporting'], cta: 'devSolutions', ctaHref: '/developers/', cta2: 'discuss', cta2Href: '/developers/#meet' },
