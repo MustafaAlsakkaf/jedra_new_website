@@ -251,17 +251,17 @@ function leadForm(lang, { type = 'general', project = null, interest = '', name 
   const when = (w) => (w ? ` data-when="${w}"${shown(w) ? '' : ' hidden'}` : '');
   return `<form class="form" ${attrs} novalidate>${hidden}
 ${chips('request_type', f.requestType, types, type, '', (k) => ` data-submit="${esc(submitFor(k))}"`)}
-${project ? `<div${when('request_type=brochure')}><input type="hidden" name="project" value="${esc(project[lang])}"></div>` : ''}
+${project ? `<div class="carrier"${when('request_type=brochure')}><input type="hidden" name="project" value="${esc(project[lang])}"></div>` : ''}
 ${field('name', f.name, `<input id="${id('name')}" name="name" type="text" autocomplete="name" placeholder="${esc(f.namePh)}" required>`)}
 ${field('phone', f.phone, `<input id="${id('phone')}" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="${esc(f.phonePh)}" required>`)}
 ${field('company', f.company, `<input id="${id('company')}" name="company" type="text" autocomplete="organization" required>`, { w: 'request_type=developer' })}
 ${field('email', `${f.email} ${opt}`, `<input id="${id('email')}" name="email" type="email" autocomplete="email" dir="ltr">`, { w: 'request_type=developer' })}
 ${chips('project', f.projectSel, picks, pickDefault, BUYER)}
 ${chips('unit_type', `${f.unitType} ${opt}`, f.unitTypes, '', `${BUYER};project=help`)}
-${field('budget', `${f.budget} ${opt}`, `<select id="${id('budget')}" name="budget"><option value="">${f.budgetAny}</option>${f.budgets.map((x) => `<option>${x}</option>`).join('')}</select>`, { w: `${BUYER};project=help` })}
+${field('budget', `${f.budget} ${opt}`, `<select id="${id('budget')}" name="budget"><option value="">${f.budgetAny}</option>${f.budgets.map((x) => `<option>${x}</option>`).join('')}</select>`, { full: true, w: `${BUYER};project=help` })}
 ${chips('visit_time', f.visitTime, f.visitTimes, 'evening', 'request_type=visit')}
 ${chips('project_type', f.projectType, f.projectTypes, 'residential', 'request_type=developer')}
-${field('units', f.units, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1" required>`, { w: 'request_type=developer' })}
+${field('units', f.units, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1" required>`, { full: true, w: 'request_type=developer' })}
 ${chips('contact_by', f.contactBy, f.contactWays, 'call', 'request_type=project visit general brochure')}
 ${field('message', `${f.message} ${opt}`, `<textarea id="${id('message')}" name="message" rows="3" placeholder="${esc(f.messagePh)}"></textarea>`, { full: true })}
 <label class="consent full"><input type="checkbox" name="consent" value="yes" required><span>${f.consent(href(lang, '/privacy/'))}</span></label>

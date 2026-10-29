@@ -244,6 +244,7 @@ a.sold-item:hover { border-color: var(--navy); }
 /* Forms */
 .form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 44px; }
 .form .full { grid-column: 1 / -1; }
+.form .carrier { display: none !important; }
 .field label, .field legend { display: block; font-size: 15px; font-weight: 700; margin-bottom: 8px; padding: 0; }
 .field .opt { font-weight: 400; color: var(--slate); }
 .field input, .field textarea { width: 100%; min-height: 52px; padding: 13px 16px; border: 1px solid var(--steel); border-radius: 12px; background: var(--white); color: var(--navy); font-size: 17px; font-weight: 400; transition: border-color .2s, box-shadow .2s; }
@@ -471,3 +472,24 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 .brochure-card .icon { width: 32px; height: 32px; color: var(--navy); }
 .brochure-card h2 { margin-top: 10px; }
 .brochure-card p { color: var(--slate); margin-top: 6px; }
+
+/* Project bar: one line on phones */
+.subnav-end a { white-space: nowrap; }
+@media (max-width: 640px) { .subnav-end .more { display: none; } .subnav-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+
+/* Mobile: brand block on its own row in the footer, links in aligned columns */
+@media (max-width: 860px) {
+  .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; }
+  .footer-grid > div:first-child { grid-column: 1 / -1; }
+  .social { flex-wrap: wrap; }
+  .social p { flex-basis: 100%; margin: 0; }
+}
+/* Mobile: taller slideshow photo so the project details have room */
+@media (max-width: 640px) {
+  .hero-slides .slide img { height: clamp(420px, 115vw, 520px); }
+  .slide-info { inset-inline: 20px; bottom: 44px; }
+  .slide-dots { bottom: 16px; }
+}
+@media (max-width: 860px) {
+  .footer-bottom, .footer-bottom .legal { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+}
