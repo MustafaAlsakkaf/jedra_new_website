@@ -389,7 +389,6 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 @media (max-width: 640px) { .partners { grid-template-columns: repeat(2, auto); gap: 28px 36px; } }
 
 /* Figures note (replaces footnote markers) */
-.stats-note { margin-top: 40px; font-size: 14px; font-weight: 500; opacity: .75; }
 
 /* Shared "Talk to JEDRA" block */
 .contact-head { text-align: center; max-width: 760px; margin-inline: auto; }
@@ -425,3 +424,17 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 /* Optional marketing consent and links in legal text */
 .consent.optional { color: var(--slate); font-size: 14px; margin-top: -4px; }
 .prose a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Home hero caption under the project photo */
+.hero-media figcaption { text-align: center; padding: 18px 0 0; }
+.hero-media figcaption .more { color: var(--gold); }
+
+/* Footer contact icons */
+.contact-icons { margin-top: 0; }
+.contact-icons svg { width: 18px; height: 18px; }
+.contact-icons a[href*="wa.me"] svg { fill: currentColor; stroke: none; }
+
+/* Careers tile on gold */
+.tile.gold .eyebrow { color: var(--navy); }
+figure.hero-media img { border-radius: var(--radius-l); }
+figure.hero-media figcaption { padding: 18px 0 clamp(36px, 5vw, 56px); }

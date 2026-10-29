@@ -174,7 +174,7 @@ ${crumbs}
 <div><a class="footer-logo" href="${href(lang, '/')}" aria-label="${esc(n.homeAria)}">${logo(lang, 'light')}</a><p>${f.tagline}</p>${socialHtml}</div>
 <div><h2>${f.company}</h2><ul><li><a href="${href(lang, '/about/')}">${n.about}</a></li><li><a href="${href(lang, '/properties/')}">${n.projects}</a></li><li><a href="/newhires.html">${n.careers}</a></li></ul></div>
 <div><h2>${f.services}</h2><ul><li><a href="${href(lang, '/developers/')}">${n.developers}</a></li><li><a href="${href(lang, '/properties/')}">${f.buyers}</a></li><li><a href="${href(lang, '/international/')}">${n.international}</a></li></ul></div>
-<div><h2>${f.contact}</h2><ul><li><a class="ltr" href="tel:${SITE.phone}" data-loc="footer">${SITE.phoneDisplay}</a></li><li><a href="${wa(t.waText)}" data-loc="footer">${t.actions.whatsapp}</a></li><li><a class="ltr" href="mailto:${SITE.email}">${SITE.email}</a></li><li><a href="${href(lang, '/contact/')}">${n.contact}</a></li></ul></div>
+<div><h2>${f.contact}</h2><div class="social contact-icons"><a href="tel:${SITE.phone}" data-loc="footer" aria-label="${esc(t.actions.call)} ${SITE.phoneDisplay}" title="${SITE.phoneDisplay}">${icon('phone', '')}</a><a href="${wa(t.waText)}" data-loc="footer" aria-label="${esc(t.actions.whatsapp)}" title="${esc(t.actions.whatsapp)}">${WA_SVG}</a><a href="mailto:${SITE.email}" aria-label="${SITE.email}" title="${SITE.email}">${icon('mail', '')}</a></div><ul style="margin-top:16px"><li><a href="${href(lang, '/contact/')}">${n.contact}</a></li></ul></div>
 </div>
 <div class="footer-bottom">
 <span>© ${SITE.year} ${t.brandFull}. ${f.rights}</span>
@@ -194,7 +194,7 @@ ${crumbs}
 
 // ---------- shared blocks ----------
 const statsBlock = (lang) => T[lang].stats.map((s) => `<div><p class="stat-num">${s.value}${s.unit ? `<small>${s.unit}</small>` : ''}</p><p class="stat-label">${s.label}</p></div>`).join('');
-const stats = (lang, style = '') => `<div class="stats"${style ? ` style="${style}"` : ''}>${statsBlock(lang)}</div><p class="stats-note">${T[lang].statsNote}</p>`;
+const stats = (lang, style = '') => `<div class="stats"${style ? ` style="${style}"` : ''}>${statsBlock(lang)}</div>`;
 
 function partnerLogo(p, lang) {
   if (!p.logo) return p[lang];
@@ -247,7 +247,7 @@ ${field('company', f.company, `<input id="${id('company')}" name="company" type=
 ${phoneF}
 ${emailF()}
 ${chips('project_type', f.projectType, f.projectTypes, 'residential')}
-${field('units', `${f.units} <span class="opt">${f.optional}</span>`, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1">`)}
+${field('units', f.units, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1" required>`)}
 ${messageF()}
 ${consent}
 ${submit(f.submitDev)}
@@ -317,6 +317,7 @@ function homePage(lang) {
 <ul class="checks">${x.points.map((pt) => `<li>${icon('check', '')}${pt}</li>`).join('')}</ul>
 <div class="btn-row"><a class="btn ${x.key === 'dev' ? 'btn-gold' : 'btn-navy'}" href="${href(lang, x.ctaHref)}">${t.cta[x.cta]}</a><a class="more" href="${href(lang, x.cta2Href)}">${t.cta[x.cta2]}</a></div>
 </article>`;
+  const heroProject = PROJECTS.find((p) => p.status === 'available' && p.cover);
   const body = `<main id="main">
 <section class="dark hero center">
 <div class="wrap">
@@ -324,7 +325,7 @@ function homePage(lang) {
 <p class="lead on-dark">${h.lead}</p>
 <div class="btn-row"><a class="btn btn-gold" href="${href(lang, '/properties/')}">${t.cta.explore}</a><a class="btn btn-outline" href="${href(lang, '/developers/')}">${t.cta.devSolutions}</a></div>
 </div>
-<div class="wide hero-media">${img('hero', '', { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div>
+${heroProject ? `<figure class="wide hero-media">${img(heroProject.cover, T[lang].project.photoAlt(heroProject[lang]), { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}<figcaption><a class="more" href="${projectUrl(lang, heroProject)}">${h.heroCaption(heroProject[lang], heroProject.district[lang])}</a></figcaption></figure>` : ''}
 </section>
 
 <section class="light pad" aria-labelledby="paths-title">
@@ -362,8 +363,8 @@ ${img('network', '', { cls: 'bg-img' })}
 
 <section class="light" style="padding:16px 0">
 <div class="wide tiles">
-<article class="tile mist">
-${img('careers', '', { cls: 'bg-img', sizes: '(max-width: 760px) 100vw, 50vw' })}
+<article class="tile gold">
+${img('fabric', '', { cls: 'bg-img', sizes: '(max-width: 760px) 100vw, 50vw' })}
 <p class="eyebrow">${h.careersTile.eyebrow}</p><h2 class="h-m">${h.careersTile.title}</h2>
 <div class="btn-row"><a class="more" href="/newhires.html">${t.cta.apply}</a></div>
 </article>
@@ -389,7 +390,7 @@ ${contactSection(lang, { name: 'home' })}
     sameAs: Object.values(SITE.social).filter(Boolean),
   };
   return { path: '/', key: 'home', title: h.title, description: h.description, body, jsonld: [org],
-    preload: `<link rel="preload" as="image" type="image/webp" href="/assets/img/hero-1600.webp" imagesrcset="/assets/img/hero-800.webp 800w, /assets/img/hero-1600.webp 1600w" imagesizes="(max-width: 1400px) 100vw, 1400px" fetchpriority="high">` };
+    preload: `<link rel="preload" as="image" type="image/webp" href="/assets/img/project-bonsai-1600.webp" imagesrcset="/assets/img/project-bonsai-800.webp 800w, /assets/img/project-bonsai-1600.webp 1600w" imagesizes="(max-width: 1400px) 100vw, 1400px" fetchpriority="high">` };
 }
 
 function developersPage(lang) {
@@ -435,7 +436,7 @@ ${img('pattern-line', '', { cls: 'bg-img dim' })}
 <div class="grid-4 features" style="margin-top:64px;gap:44px 28px">${cards(d.benefits, 'feature')}</div></div>
 </section>
 
-${contactSection(lang, { kind: 'developer', name: 'developer', id: 'meet', tone: 'gold', title: d.meetTitle, lead: d.meetLead })}
+${contactSection(lang, { kind: 'developer', name: 'developer', id: 'meet', tone: 'mist', title: d.meetTitle, lead: d.meetLead })}
 </main>`;
   return { path: '/developers/', key: 'developers', title: d.title, description: d.description, body, bodyClass: 'has-subnav', crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }
@@ -505,7 +506,7 @@ function aboutPage(lang) {
   const crumbs = [[t.nav.about, '/about/']];
   const body = `<main id="main">
 <section class="dark hero center"><div class="wrap"><h1 class="h-xl">${a.h1}</h1><p class="lead on-dark">${a.lead}</p></div>
-<div class="wide hero-media">${img('careers', '', { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div></section>
+<div class="wide hero-media">${img('riyadh', lang === 'ar' ? 'أفق الرياض' : 'The Riyadh skyline', { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div></section>
 <section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over">${stats(lang, 'margin-top:0')}</div></section>
 <section class="light pad"><div class="wrap split">
 <div><h2 class="h-l">${a.storyTitle}</h2></div>
