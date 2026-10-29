@@ -88,6 +88,9 @@
       form.querySelectorAll('[data-show-when][hidden] input, [data-show-when][hidden] select').forEach((el) => { el.disabled = true; });
       const data = new FormData(form);
       form.querySelectorAll('[data-show-when] input, [data-show-when] select').forEach((el) => { el.disabled = false; });
+      // Record the optional marketing choice either way, so "no" is documented too
+      const marketing = form.querySelector('input[name="marketing_consent"]');
+      if (marketing) data.set('marketing_consent', marketing.checked ? 'yes' : 'no');
       const type = data.get('request_type') || '';
       data.append('access_key', form.dataset.key);
       data.append('subject', `${form.dataset.subject} | ${type}${data.get('project') ? ' | ' + data.get('project') : ''}`);

@@ -407,3 +407,21 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 .aside-legal { margin-top: 20px; font-size: 13px; line-height: 1.8; color: var(--steel); }
 .waitlist { margin-top: 24px; }
 @media (max-width: 900px) { .contact-split { grid-template-columns: minmax(0, 1fr); } .contact-aside { position: static; } }
+
+/* Project photos */
+.project-feature.has-photo { min-height: 440px; }
+.project-feature.has-photo .bg-img { opacity: 1; }
+.project-feature.has-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(18, 30, 59, .94) 0%, rgba(18, 30, 59, .6) 42%, rgba(18, 30, 59, .05) 78%); }
+.project-feature.has-photo > :not(.bg-img) { position: relative; z-index: 1; }
+.project-feature.has-photo .meta { color: var(--white); opacity: .85; }
+
+/* Vision, mission and six values */
+.vm-card .lead { font-size: clamp(18px, 1.7vw, 21px); line-height: 1.75; }
+.values { gap: 40px 32px; }
+.values .value { border-top: 3px solid var(--gold); }
+.values .value h3 { font-size: 22px; }
+@media (max-width: 640px) { .values .value h3 { font-size: 19px; } }
+
+/* Optional marketing consent and links in legal text */
+.consent.optional { color: var(--slate); font-size: 14px; margin-top: -4px; }
+.prose a { text-decoration: underline; text-underline-offset: 3px; }

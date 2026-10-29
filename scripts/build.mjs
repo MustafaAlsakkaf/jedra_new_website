@@ -84,7 +84,7 @@ const SOCIAL = {
 
 const BUILD = { css: '', js: '' };
 // International section image: add site/assets/img/makkah-<width>.webp and it is used automatically.
-const INTL = existsSync(join(SRC, 'assets/img/makkah-1600.webp'))
+const INTL = existsSync(join(SRC, 'assets/img/makkah-800.webp'))
   ? { img: 'makkah', alt: { ar: 'المسجد الحرام في مكة المكرمة', en: 'The Grand Mosque in Makkah' } }
   : { img: 'riyadh', alt: { ar: 'أفق الرياض عند الغروب', en: 'Riyadh skyline at sunset' } };
 
@@ -207,8 +207,8 @@ const projectUrl = (lang, p) => href(lang, `/properties/${p.slug}/`);
 
 function featureCard(lang, p) {
   const t = T[lang];
-  return `<article class="project-feature" data-status="${p.status}">
-${img('pattern-line', '', { cls: 'bg-img', sizes: '(max-width: 640px) 100vw, 50vw' })}
+  return `<article class="project-feature${p.cover ? ' has-photo' : ''}" data-status="${p.status}">
+${p.cover ? img(p.cover, p[lang], { cls: 'bg-img', sizes: '(max-width: 640px) 100vw, 50vw' }) : img('pattern-line', '', { cls: 'bg-img', sizes: '(max-width: 640px) 100vw, 50vw' })}
 <span class="badge badge-available">${t.status.available}</span>
 <div class="over"><h3><a href="${projectUrl(lang, p)}">${p[lang]}</a></h3><p class="meta">${t.city(p.district[lang])}${p.type ? comma(lang) + p.type[lang] : ''}</p>
 <div class="btn-row"><a class="btn btn-gold" href="${projectUrl(lang, p)}">${t.cta.viewProject}</a><a class="more" href="${projectUrl(lang, p)}#request">${p.price ? p.price[lang] : t.cta.price}</a></div></div>
@@ -235,7 +235,8 @@ function leadForm(lang, kind, { project = '', interest = '', name = 'website', c
   const phoneF = field('phone', f.phone, `<input id="${id('phone')}" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="${esc(f.phonePh)}" required>`);
   const emailF = (full = false) => field('email', `${f.email} <span class="opt">${f.optional}</span>`, `<input id="${id('email')}" name="email" type="email" autocomplete="email" dir="ltr">`, full);
   const messageF = (label = f.message) => field('message', `${label} <span class="opt">${f.optional}</span>`, `<textarea id="${id('message')}" name="message" rows="3" placeholder="${esc(f.messagePh)}"></textarea>`, true);
-  const consent = `<label class="consent full"><input type="checkbox" name="consent" value="yes" required><span>${f.consent(href(lang, '/privacy/'))}</span></label>`;
+  const consent = `<label class="consent full"><input type="checkbox" name="consent" value="yes" required><span>${f.consent(href(lang, '/privacy/'))}</span></label>
+<label class="consent full optional"><input type="checkbox" name="marketing_consent" value="yes"><span>${f.marketing}</span></label>`;
   const submit = (label) => `<button class="btn btn-navy full" type="submit">${label}</button><p class="form-status" role="status" aria-live="polite"></p>`;
   const projectOptions = [`<option value="${esc(f.projectAny)}">${f.projectAny}</option>`, ...PROJECTS.filter((p) => p.status === 'available').map((p) => `<option value="${esc(p[lang])}">${p[lang]}</option>`)].join('');
 
@@ -381,7 +382,7 @@ ${contactSection(lang, { name: 'home' })}
     name: t.brandFull, alternateName: lang === 'ar' ? 'JEDRA' : 'جيدرا',
     url: SITE.url + href(lang, '/'), logo: `${SITE.url}/assets/brand/logo-${lang}-dark.png`, image: `${SITE.url}/assets/og-${lang}.png`,
     telephone: SITE.phone, email: SITE.email,
-    address: { '@type': 'PostalAddress', addressLocality: lang === 'ar' ? 'الرياض' : 'Riyadh', addressCountry: 'SA' },
+    address: { '@type': 'PostalAddress', streetAddress: lang === 'ar' ? 'طريق أنس بن مالك، حي الياسمين' : 'Anas Ibn Malik Road, Al Yasmin', addressLocality: lang === 'ar' ? 'الرياض' : 'Riyadh', postalCode: '13326', addressCountry: 'SA' },
     areaServed: { '@type': 'City', name: lang === 'ar' ? 'الرياض' : 'Riyadh' },
     identifier: [{ '@type': 'PropertyValue', name: 'FAL', value: SITE.falLicense }, { '@type': 'PropertyValue', name: 'Unified National Number', value: SITE.unifiedNumber }],
     foundingDate: String(SITE.founded),
@@ -476,7 +477,7 @@ function projectPage(lang, p) {
   const crumbs = [[t.nav.projects, '/properties/'], [name, `/properties/${p.slug}/`]];
   const productBar = available ? `<div class="subnav"><div class="wrap"><p class="subnav-title">${name}</p><div class="subnav-end"><a class="more sub-wa" href="${wa(c.waText(name))}" data-loc="project-bar">${t.actions.whatsapp}</a><a class="btn btn-gold" href="#request">${t.cta.details}</a></div></div></div>` : '';
   const body = `${productBar}<main id="main">
-<section class="dark hero pad-s" style="padding-bottom:88px">
+<section class="dark hero pad-s" style="padding-bottom:${p.cover ? 0 : 88}px">
 ${img('pattern-line', '', { cls: 'bg-img dim' })}
 <div class="wrap over">
 <span class="badge ${available ? 'badge-available' : 'badge-sold'}">${t.status[p.status]}</span>
@@ -486,6 +487,7 @@ ${img('pattern-line', '', { cls: 'bg-img dim' })}
     ? `<a class="btn btn-gold" href="#request">${t.cta.details}</a><a class="btn btn-outline" href="#request" data-pick="visit">${t.cta.visit}</a><a class="more" href="${wa(c.waText(name))}" data-loc="project">${t.cta.whatsapp}</a>`
     : `<a class="btn btn-gold" href="${href(lang, '/properties/')}">${t.cta.explore}</a><a class="more" href="${wa(t.waText)}" data-loc="project">${t.cta.whatsapp}</a>`}</div>
 </div>
+${p.cover ? `<div class="wide hero-media over">${img(p.cover, c.photoAlt(name), { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div>` : ''}
 </section>
 <section class="light pad-s"><div class="wrap"><dl class="facts" style="margin-top:0">${facts.map(([k, v]) => `<div class="fact"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div></section>
 ${available
@@ -511,8 +513,8 @@ function aboutPage(lang) {
 </div></section>
 <section class="mist pad"><div class="wrap">
 <div class="grid-2 vm"><div class="vm-card"><h2 class="h-s">${a.visionTitle}</h2><p class="lead">${a.vision}</p></div><div class="vm-card"><h2 class="h-s">${a.missionTitle}</h2><p class="lead">${a.mission}</p></div></div>
-<h2 class="h-l center" style="margin-top:88px">${a.valuesTitle}</h2>
-<div class="grid-4 features" style="margin-top:48px;gap:40px 28px">${a.values.map((v) => `<div class="feature value"><h3>${v.title}</h3><p>${v.text}</p></div>`).join('')}</div>
+<h2 class="h-m center" style="margin-top:72px">${a.valuesTitle}</h2>
+<div class="grid-3 features values" style="margin-top:40px">${a.values.map((v) => `<div class="feature value"><h3>${v.title}</h3><p>${v.text}</p></div>`).join('')}</div>
 </div></section>
 <section class="dark pad">${img('network', '', { cls: 'bg-img' })}<div class="wrap over"><h2 class="h-l center">${a.howTitle}</h2><div class="grid-4" style="margin-top:56px">${cards(t.method)}</div></div></section>
 <section class="light pad"><div class="wrap">
