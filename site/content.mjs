@@ -25,6 +25,8 @@ export const PARTNERS = [
   { ar: 'بونساي', en: 'Bonsai', logo: 'bonsai.png', h: 66 },
   { ar: 'نقش', en: 'Naqsh', logo: 'naqsh.png', h: 44 },
   { ar: 'محمد الحبيب', en: 'Mohammad Al Habib', logo: 'mohammad-al-habib.png', h: 40 },
+  { ar: 'مشراق', en: 'Mishraq', logo: 'mishraq.png', h: 74 },
+  { ar: 'إنبار', en: 'Enbar', logo: 'enbar.png', h: 38 },
 ]
 
 // status: 'available' or 'sold'. landing: the existing campaign/QR page (Zoho form) for the project.

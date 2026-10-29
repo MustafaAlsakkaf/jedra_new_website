@@ -493,3 +493,7 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 @media (max-width: 860px) {
   .footer-bottom, .footer-bottom .legal { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 }
+
+/* Eight partners: two even rows of four, two per row on small screens */
+.partners { grid-template-columns: repeat(4, auto); gap: 40px 72px; }
+@media (max-width: 900px) { .partners { grid-template-columns: repeat(2, auto); gap: 32px 48px; } }
