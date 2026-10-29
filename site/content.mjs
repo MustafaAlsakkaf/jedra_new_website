@@ -61,7 +61,7 @@ export const T = {
     dir: 'rtl',
     locale: 'ar_SA',
     brand: 'جيدرا',
-    brandFull: 'جيدرا للوساطة العقارية',
+    brandFull: 'جيدرا',
     skip: 'انتقل إلى المحتوى',
     nav: {
       home: 'الرئيسية', projects: 'المشاريع', developers: 'حلول المطورين', international: 'العملاء الدوليون', about: 'من نحن', careers: 'الوظائف',
@@ -244,7 +244,7 @@ export const T = {
     },
     contactPage: {
       title: 'تواصل معنا | جيدرا',
-      description: 'تواصل مع جيدرا للوساطة العقارية في الرياض عبر الهاتف أو واتساب أو البريد الإلكتروني، أو اترك طلبك ليتواصل معك الفريق المختص.',
+      description: 'تواصل مع جيدرا: اترك طلبك ويصل مباشرة إلى الفريق المختص.',
       h1: 'تواصل معنا.',
       lead: 'اختر نوع طلبك واترك بياناتك، ويصل طلبك مباشرة إلى الفريق المختص.',
       direct: 'تواصل مباشر',
@@ -276,7 +276,7 @@ export const T = {
       needConsent: 'يلزم تأكيد الاطلاع على سياسة الخصوصية لإرسال الطلب.',
     },
     footer: {
-      tagline: 'وساطة وإدارة مبيعات عقارية في المملكة العربية السعودية.',
+      tagline: 'نصل بالمشاريع العقارية إلى مُلّاكها.',
       company: 'جيدرا', services: 'الخدمات', contact: 'تواصل', legal: 'قانوني',
       buyers: 'للمستثمرين الأفراد',
       rights: 'جميع الحقوق محفوظة.',
@@ -332,7 +332,7 @@ export const T = {
     dir: 'ltr',
     locale: 'en_US',
     brand: 'JEDRA',
-    brandFull: 'JEDRA Real Estate Brokerage',
+    brandFull: 'JEDRA',
     skip: 'Skip to content',
     nav: {
       home: 'Home', projects: 'Projects', developers: 'Developer solutions', international: 'International clients', about: 'About', careers: 'Careers',
@@ -515,7 +515,7 @@ export const T = {
     },
     contactPage: {
       title: 'Contact | JEDRA',
-      description: 'Contact JEDRA Real Estate Brokerage in Riyadh by phone, WhatsApp or email, or send your request and the right team will contact you.',
+      description: 'Contact JEDRA. Send your request and it goes straight to the right team.',
       h1: 'Contact us.',
       lead: 'Choose your request type and leave your details, and your request goes straight to the right team.',
       direct: 'Reach us directly',
@@ -547,7 +547,7 @@ export const T = {
       needConsent: 'Please confirm you have read the privacy policy to send your request.',
     },
     footer: {
-      tagline: 'Real estate brokerage and sales management in Saudi Arabia.',
+      tagline: 'Bringing real estate projects to their owners.',
       company: 'JEDRA', services: 'Services', contact: 'Contact', legal: 'Legal',
       buyers: 'For individual investors',
       rights: 'All rights reserved.',
