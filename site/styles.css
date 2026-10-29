@@ -387,3 +387,23 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 .on-dark-logos { justify-content: start; }
 @media (max-width: 1100px) { .partners { grid-template-columns: repeat(3, auto); gap: 32px 56px; } }
 @media (max-width: 640px) { .partners { grid-template-columns: repeat(2, auto); gap: 28px 36px; } }
+
+/* Figures note (replaces footnote markers) */
+.stats-note { margin-top: 40px; font-size: 14px; font-weight: 500; opacity: .75; }
+
+/* Shared "Talk to JEDRA" block */
+.contact-head { text-align: center; max-width: 760px; margin-inline: auto; }
+.contact-head .lead { margin: 16px auto 0; color: var(--slate); }
+.gold .contact-head .lead { color: var(--navy); }
+.contact-split { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 32px; align-items: start; margin-top: 48px; }
+.contact-form .form { margin-top: 0; }
+.contact-aside { background: var(--navy); color: var(--white); border-radius: var(--radius-l); padding: 32px; position: sticky; top: calc(var(--header-h) + 72px); }
+.contact-aside h3 { font-size: 22px; font-weight: 800; }
+.contact-aside .channels { margin-top: 18px; }
+.contact-aside .channel { background: rgba(255, 255, 255, .07); color: var(--white); font-size: 17px; }
+.contact-aside .channel:hover { background: rgba(255, 255, 255, .13); }
+.contact-aside .channel svg { color: var(--gold); width: 24px; height: 24px; }
+.contact-aside .channel small { color: var(--steel); }
+.aside-legal { margin-top: 20px; font-size: 13px; line-height: 1.8; color: var(--steel); }
+.waitlist { margin-top: 24px; }
+@media (max-width: 900px) { .contact-split { grid-template-columns: minmax(0, 1fr); } .contact-aside { position: static; } }

@@ -11,6 +11,7 @@ Everything a non-developer changes lives in **`site/content.mjs`**:
   unit type, approved price, REGA ad license number, map link and images (shown only when filled in)
 - `T.ar` / `T.en`: all page text in Arabic and English, including the privacy policy and terms
   (have them reviewed by your legal advisor before launch)
+- International section image: drop `makkah-1600.webp` and `makkah-800.webp` into `site/assets/img/` and it replaces the Riyadh image automatically
 
 ## Pages
 `/` home, `/developers/`, `/properties/` and `/properties/<project>/`, `/about/`, `/international/`, `/contact/`,

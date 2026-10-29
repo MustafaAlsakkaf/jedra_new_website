@@ -83,6 +83,10 @@ const SOCIAL = {
 };
 
 const BUILD = { css: '', js: '' };
+// International section image: add site/assets/img/makkah-<width>.webp and it is used automatically.
+const INTL = existsSync(join(SRC, 'assets/img/makkah-1600.webp'))
+  ? { img: 'makkah', alt: { ar: 'المسجد الحرام في مكة المكرمة', en: 'The Grand Mosque in Makkah' } }
+  : { img: 'riyadh', alt: { ar: 'أفق الرياض عند الغروب', en: 'Riyadh skyline at sunset' } };
 
 // ---------- layout ----------
 function head(lang, page) {
@@ -159,14 +163,13 @@ function footer(lang, page) {
   const t = T[lang];
   const f = t.footer;
   const n = t.nav;
-  // Apple-style: footnotes for any figure on the page, then the breadcrumb, then the site map
-  const notes = page.footnotes ? `<ol class="footnotes">${t.footnotes.map((x) => `<li>${x}</li>`).join('')}</ol>` : '';
+  // Apple-style: the breadcrumb above the site map
   const crumbs = page.crumbs ? `<nav class="crumbs" aria-label="${esc(n.breadcrumb)}"><a href="${href(lang, '/')}">${t.brand}</a>${page.crumbs.map(([label, p], i) => (i === page.crumbs.length - 1 ? `<span aria-current="page">${label}</span>` : `<a href="${href(lang, p)}">${label}</a>`)).join('')}</nav>` : '';
   const social = Object.entries(SITE.social).filter(([, u]) => u);
   const socialHtml = social.length ? `<div class="social"><p>${f.follow}</p>${social.map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener" aria-label="${SOCIAL[k][0]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SOCIAL[k][1]}</svg></a>`).join('')}</div>` : '';
   return `<footer class="site-footer">
 <div class="wrap">
-${notes}${crumbs}
+${crumbs}
 <div class="footer-grid">
 <div><a class="footer-logo" href="${href(lang, '/')}" aria-label="${esc(n.homeAria)}">${logo(lang, 'light')}</a><p>${f.tagline}</p>${socialHtml}</div>
 <div><h2>${f.company}</h2><ul><li><a href="${href(lang, '/about/')}">${n.about}</a></li><li><a href="${href(lang, '/properties/')}">${n.projects}</a></li><li><a href="/newhires.html">${n.careers}</a></li></ul></div>
@@ -190,7 +193,8 @@ ${notes}${crumbs}
 }
 
 // ---------- shared blocks ----------
-const statsBlock = (lang) => T[lang].stats.map((s) => `<div><p class="stat-num">${s.value}${s.unit ? `<small>${s.unit}</small>` : ''}${s.note ? `<sup class="fn">${s.note}</sup>` : ''}</p><p class="stat-label">${s.label}</p></div>`).join('');
+const statsBlock = (lang) => T[lang].stats.map((s) => `<div><p class="stat-num">${s.value}${s.unit ? `<small>${s.unit}</small>` : ''}</p><p class="stat-label">${s.label}</p></div>`).join('');
+const stats = (lang, style = '') => `<div class="stats"${style ? ` style="${style}"` : ''}>${statsBlock(lang)}</div><p class="stats-note">${T[lang].statsNote}</p>`;
 
 function partnerLogo(p, lang) {
   if (!p.logo) return p[lang];
@@ -241,7 +245,7 @@ ${nameF}
 ${field('company', f.company, `<input id="${id('company')}" name="company" type="text" autocomplete="organization" required>`)}
 ${phoneF}
 ${emailF()}
-${chips('project_type', f.projectType, f.projectTypes, 'residential', false)}
+${chips('project_type', f.projectType, f.projectTypes, 'residential')}
 ${field('units', `${f.units} <span class="opt">${f.optional}</span>`, `<input id="${id('units')}" name="units" type="number" inputmode="numeric" min="1">`)}
 ${messageF()}
 ${consent}
@@ -265,12 +269,33 @@ ${chips('request_type', f.requestType, f.types, 'project')}
 ${nameF}
 ${phoneF}
 ${compact ? '' : `<div class="field" data-show-when="project visit"><label for="${id('project')}">${f.projectSel}</label><select id="${id('project')}" name="project">${projectOptions}</select></div>
-${chips('contact_by', f.contactBy, f.contactWays, 'call', false)}`}
+${chips('contact_by', f.contactBy, f.contactWays, 'call')}`}
 ${chips('visit_time', f.visitTime, f.visitTimes, 'evening', true, ' data-show-when="visit" hidden')}
 ${messageF()}
 ${consent}
 ${submit(f.submit)}
 </form>`;
+}
+
+// One "Talk to JEDRA" block, same layout on every page: heading, the form, and direct channels beside it.
+function contactSection(lang, { kind = 'general', name = 'contact', interest = '', project = '', title, lead, id = 'contact', tone = 'light', after = '' } = {}) {
+  const t = T[lang];
+  const h = t.home;
+  const heading = title === null ? '' : `<div class="contact-head"><h2 class="h-l" id="${id}-title">${title || h.contactTitle}</h2><p class="lead">${lead || h.contactLead}</p></div>`;
+  return `<section class="${tone} pad" id="${id}"${title === null ? '' : ` aria-labelledby="${id}-title"`}><div class="wrap">
+${heading}
+<div class="contact-split">
+<div class="contact-form">${leadForm(lang, kind, { name, interest, project })}${after}</div>
+<aside class="contact-aside" aria-label="${esc(h.contactDirect)}">
+<h3>${h.contactDirect}</h3>
+<div class="channels">
+<a class="channel" href="${wa(project ? t.project.waText(project) : t.waText)}" data-loc="${name}">${WA_SVG}<span>${t.actions.whatsapp}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
+<a class="channel" href="tel:${SITE.phone}" data-loc="${name}">${icon('phone', '')}<span>${t.actions.call}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
+<a class="channel" href="mailto:${SITE.email}">${icon('mail', '')}<span>${t.form.email}<small class="ltr">${SITE.email}</small></span></a>
+</div>
+<p class="aside-legal">${t.footer.fal} <span class="ltr">${SITE.falLicense}</span><br>${t.footer.unified} <span class="ltr">${SITE.unifiedNumber}</span></p>
+</aside>
+</div></div></section>`;
 }
 
 const cards = (items, cls = 'glass') => items.map((s) => `<div class="${cls}">${icon(s.icon)}<h3>${s.title}</h3><p>${s.text}</p></div>`).join('');
@@ -308,7 +333,7 @@ function homePage(lang) {
 
 <section class="gold pad center" aria-labelledby="stats-title">
 ${img('fabric', '', { cls: 'bg-img' })}
-<div class="wrap over"><h2 class="h-l" id="stats-title">${h.statsTitle}</h2><div class="stats">${statsBlock(lang)}</div></div>
+<div class="wrap over"><h2 class="h-l" id="stats-title">${h.statsTitle}</h2>${stats(lang)}</div>
 </section>
 
 <section class="light pad center" aria-labelledby="partners-title">
@@ -342,16 +367,14 @@ ${img('careers', '', { cls: 'bg-img', sizes: '(max-width: 760px) 100vw, 50vw' })
 <div class="btn-row"><a class="more" href="/newhires.html">${t.cta.apply}</a></div>
 </article>
 <article class="tile dark tile-shade">
-${img('riyadh', lang === 'ar' ? 'أفق الرياض عند الغروب' : 'Riyadh skyline at sunset', { cls: 'bg-img', sizes: '(max-width: 760px) 100vw, 50vw' })}
-<p class="eyebrow">${h.intlTile.eyebrow}</p><h2 class="h-m" lang="en" dir="ltr">${h.intlTile.title}</h2><p>${h.intlTile.text}</p>
+${img(INTL.img, INTL.alt[lang], { cls: 'bg-img', sizes: '(max-width: 760px) 100vw, 50vw' })}
+<p class="eyebrow">${h.intlTile.eyebrow}</p><h2 class="h-m">${h.intlTile.title}</h2><p>${h.intlTile.text}</p>
 <div class="btn-row"><a class="more" href="${href(lang, '/international/')}">${t.cta.learnMore}</a>${lang === 'ar' ? `<a class="more" href="/en/international/" lang="en" hreflang="en">${h.intlTile.ctaEn}</a>` : ''}</div>
 </article>
 </div>
 </section>
 
-<section class="light pad" id="contact" aria-labelledby="contact-title">
-<div class="wrap" style="max-width:800px"><div class="center"><h2 class="h-l" id="contact-title">${h.contactTitle}</h2><p class="lead muted" style="margin-top:16px">${h.contactLead}</p></div>${leadForm(lang, 'general', { name: 'home', compact: true })}</div>
-</section>
+${contactSection(lang, { name: 'home' })}
 </main>`;
   const org = {
     '@context': 'https://schema.org', '@type': 'RealEstateAgent',
@@ -364,7 +387,7 @@ ${img('riyadh', lang === 'ar' ? 'أفق الرياض عند الغروب' : 'Riy
     foundingDate: String(SITE.founded),
     sameAs: Object.values(SITE.social).filter(Boolean),
   };
-  return { path: '/', key: 'home', title: h.title, description: h.description, body, jsonld: [org], footnotes: true,
+  return { path: '/', key: 'home', title: h.title, description: h.description, body, jsonld: [org],
     preload: `<link rel="preload" as="image" type="image/webp" href="/assets/img/hero-1600.webp" imagesrcset="/assets/img/hero-800.webp 800w, /assets/img/hero-1600.webp 1600w" imagesizes="(max-width: 1400px) 100vw, 1400px" fetchpriority="high">` };
 }
 
@@ -400,7 +423,7 @@ function developersPage(lang) {
 
 <section class="dark pad" id="results" aria-labelledby="results-title">
 ${img('pattern-line', '', { cls: 'bg-img dim' })}
-<div class="wrap over"><h2 class="h-l center" id="results-title">${d.resultsTitle}</h2><div class="stats">${statsBlock(lang)}</div>
+<div class="wrap over"><h2 class="h-l center" id="results-title">${d.resultsTitle}</h2>${stats(lang)}
 <h3 class="h-s" style="margin-top:88px">${d.resultsSold}</h3>
 <div class="grid-2" style="margin-top:24px">${sold.map((p) => soldItem(lang, p, false)).join('')}</div>
 <h3 class="h-s" style="margin-top:72px">${d.resultsPartners}</h3>${partnersBlock(lang, 'on-dark-logos')}</div>
@@ -411,11 +434,9 @@ ${img('pattern-line', '', { cls: 'bg-img dim' })}
 <div class="grid-4 features" style="margin-top:64px;gap:44px 28px">${cards(d.benefits, 'feature')}</div></div>
 </section>
 
-<section class="gold pad" id="meet" aria-labelledby="meet-title">
-<div class="wrap" style="max-width:840px"><div class="center"><h2 class="h-l" id="meet-title">${d.meetTitle}</h2><p class="lead" style="margin-top:16px">${d.meetLead}</p></div>${leadForm(lang, 'developer', { name: 'developer' })}</div>
-</section>
+${contactSection(lang, { kind: 'developer', name: 'developer', id: 'meet', tone: 'gold', title: d.meetTitle, lead: d.meetLead })}
 </main>`;
-  return { path: '/developers/', key: 'developers', title: d.title, description: d.description, body, bodyClass: 'has-subnav', footnotes: true, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
+  return { path: '/developers/', key: 'developers', title: d.title, description: d.description, body, bodyClass: 'has-subnav', crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }
 
 function projectsPage(lang) {
@@ -433,8 +454,7 @@ function projectsPage(lang) {
 <div data-group="sold"><h2 class="h-m" style="margin-top:72px">${p.soldTitle}</h2>
 <div class="grid-2 sold-list" style="margin-top:28px">${sold.map((x) => soldItem(lang, x)).join('')}</div></div>
 </div></section>
-<section class="light pad center"><div class="wrap"><h2 class="h-l">${p.askSimilar}</h2><p class="lead muted" style="margin-top:16px">${p.askSimilarText}</p>
-<div class="btn-row" style="margin-top:28px"><a class="btn btn-navy" href="${href(lang, '/contact/')}">${t.cta.advisor}</a><a class="more" href="${wa(t.waText)}" data-loc="projects">${t.cta.whatsapp}</a></div></div></section>
+${contactSection(lang, { name: 'properties', title: p.askSimilar, lead: p.askSimilarText })}
 </main>`;
   const list = { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: PROJECTS.map((x, i) => ({ '@type': 'ListItem', position: i + 1, name: x[lang], url: SITE.url + projectUrl(lang, x) })) };
   return { path: '/properties/', key: 'projects', title: p.title, description: p.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs), list] };
@@ -468,14 +488,13 @@ ${img('pattern-line', '', { cls: 'bg-img dim' })}
 </div>
 </section>
 <section class="light pad-s"><div class="wrap"><dl class="facts" style="margin-top:0">${facts.map(([k, v]) => `<div class="fact"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div></section>
-${available ? `<section class="mist pad" id="request" aria-labelledby="request-title"><div class="wrap" style="max-width:800px"><div class="center"><h2 class="h-l" id="request-title">${c.formTitle}</h2><p class="lead muted" style="margin-top:16px">${c.formLead}</p></div>
-${leadForm(lang, 'project', { project: name, name: 'project' })}
-${p.landing ? `<p class="center muted" style="margin-top:28px">${c.waitlistText} <a class="more" href="${p.landing}">${t.cta.waitlist}</a></p>` : ''}</div></section>`
-    : `<section class="mist pad center"><div class="wrap"><h2 class="h-l">${c.soldTitle}</h2><p class="lead muted" style="margin-top:16px">${c.soldText}</p><div class="btn-row" style="margin-top:28px"><a class="btn btn-navy" href="${href(lang, '/properties/')}">${t.cta.explore}</a><a class="more" href="${href(lang, '/contact/')}">${t.cta.advisor}</a></div></div></section>`}
-<section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over"><h2 class="h-l">${t.home.statsTitle}</h2><div class="stats">${statsBlock(lang)}</div></div></section>
+${available
+    ? contactSection(lang, { kind: 'project', name: 'project', project: name, id: 'request', tone: 'mist', title: c.formTitle, lead: c.formLead, after: p.landing ? `<p class="muted waitlist">${c.waitlistText} <a class="more" href="${p.landing}">${t.cta.waitlist}</a></p>` : '' })
+    : contactSection(lang, { name: 'project-sold', tone: 'mist', title: c.soldTitle, lead: c.soldText })}
+<section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over"><h2 class="h-l">${t.home.statsTitle}</h2>${stats(lang)}</div></section>
 </main>`;
   const residence = { '@context': 'https://schema.org', '@type': 'ApartmentComplex', name, url: SITE.url + projectUrl(lang, p), address: { '@type': 'PostalAddress', addressLocality: lang === 'ar' ? 'الرياض' : 'Riyadh', addressRegion: p.district[lang], addressCountry: 'SA' } };
-  return { path: `/properties/${p.slug}/`, key: 'projects', title: `${name} | ${t.city(p.district[lang])} | ${t.brand}`, description: c.description(name, p.district[lang]), body, bodyClass: available ? 'has-subnav' : '', footnotes: true, crumbs, jsonld: [breadcrumbLd(lang, crumbs), residence] };
+  return { path: `/properties/${p.slug}/`, key: 'projects', title: `${name} | ${t.city(p.district[lang])} | ${t.brand}`, description: c.description(name, p.district[lang]), body, bodyClass: available ? 'has-subnav' : '', crumbs, jsonld: [breadcrumbLd(lang, crumbs), residence] };
 }
 
 function aboutPage(lang) {
@@ -485,7 +504,7 @@ function aboutPage(lang) {
   const body = `<main id="main">
 <section class="dark hero center"><div class="wrap"><h1 class="h-xl">${a.h1}</h1><p class="lead on-dark">${a.lead}</p></div>
 <div class="wide hero-media">${img('careers', '', { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div></section>
-<section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over"><div class="stats" style="margin-top:0">${statsBlock(lang)}</div></div></section>
+<section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over">${stats(lang, 'margin-top:0')}</div></section>
 <section class="light pad"><div class="wrap split">
 <div><h2 class="h-l">${a.storyTitle}</h2></div>
 <div class="stack-m lead">${a.story.map((x) => `<p>${x}</p>`).join('')}</div>
@@ -501,8 +520,9 @@ function aboutPage(lang) {
 <dl class="facts"><div class="fact"><dt>${a.foundedTitle}</dt><dd>${SITE.founded}</dd></div><div class="fact"><dt>${a.licenseFal}</dt><dd class="ltr">${SITE.falLicense}</dd></div><div class="fact"><dt>${a.licenseUnified}</dt><dd class="ltr">${SITE.unifiedNumber}</dd></div><div class="fact"><dt>${a.officeTitle}</dt><dd>${a.office}</dd></div></dl>
 <div class="center" style="margin-top:72px"><h2 class="h-m">${t.home.partnersTitle}</h2>${partnersBlock(lang)}</div>
 </div></section>
+${contactSection(lang, { name: 'about', tone: 'mist' })}
 </main>`;
-  return { path: '/about/', key: 'about', title: a.title, description: a.description, body, footnotes: true, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
+  return { path: '/about/', key: 'about', title: a.title, description: a.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }
 
 function internationalPage(lang) {
@@ -510,15 +530,15 @@ function internationalPage(lang) {
   const i = t.international;
   const crumbs = [[t.nav.international, '/international/']];
   const body = `<main id="main">
-<section class="dark hero center"><div class="wrap"><p class="eyebrow">${i.eyebrow}</p><h1 class="h-xl" lang="en" dir="ltr" style="margin-top:12px">${i.h1}</h1><p class="lead on-dark">${i.lead}</p>
+<section class="dark hero center"><div class="wrap"><p class="eyebrow">${i.eyebrow}</p><h1 class="h-xl" style="margin-top:12px">${i.h1}</h1><p class="lead on-dark">${i.lead}</p>
 <div class="btn-row"><a class="btn btn-gold" href="#contact">${i.cta}</a><a class="btn btn-outline" href="${wa(t.waText)}" data-loc="international">${t.cta.whatsapp}</a></div></div>
-<div class="wide hero-media">${img('riyadh', lang === 'ar' ? 'أفق الرياض عند الغروب' : 'Riyadh skyline at sunset', { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div></section>
+<div class="wide hero-media">${img(INTL.img, INTL.alt[lang], { sizes: '(max-width: 1400px) 100vw, 1400px', eager: true })}</div></section>
 <section class="light pad"><div class="wrap"><h2 class="h-l center">${i.pointsTitle}</h2>
 <div class="grid-3 features" style="margin-top:56px;gap:40px 28px">${cards(i.points, 'feature')}</div></div></section>
-<section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over"><div class="stats" style="margin-top:0">${statsBlock(lang)}</div></div></section>
-<section class="light pad" id="contact"><div class="wrap" style="max-width:800px"><div class="center"><h2 class="h-l">${t.home.contactTitle}</h2><p class="lead muted" style="margin-top:16px">${t.home.contactLead}</p></div>${leadForm(lang, 'general', { interest: 'international', name: 'international' })}</div></section>
+<section class="gold pad center">${img('fabric', '', { cls: 'bg-img' })}<div class="wrap over">${stats(lang, 'margin-top:0')}</div></section>
+${contactSection(lang, { name: 'international', interest: 'international' })}
 </main>`;
-  return { path: '/international/', key: 'international', title: i.title, description: i.description, body, footnotes: true, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
+  return { path: '/international/', key: 'international', title: i.title, description: i.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }
 
 function contactPage(lang) {
@@ -527,19 +547,7 @@ function contactPage(lang) {
   const crumbs = [[t.nav.contact, '/contact/']];
   const body = `<main id="main">
 <section class="dark hero center pad-s" style="padding-bottom:72px"><div class="wrap"><h1 class="h-xl">${c.h1}</h1><p class="lead on-dark">${c.lead}</p></div></section>
-<section class="light pad"><div class="wrap split">
-<div>${leadForm(lang, 'general', { name: 'contact' })}</div>
-<div><h2 class="h-s" style="margin-top:44px">${c.direct}</h2>
-<div class="channels" style="margin-top:20px">
-<a class="channel" href="${wa(t.waText)}" data-loc="contact">${WA_SVG}<span>${t.actions.whatsapp}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
-<a class="channel" href="tel:${SITE.phone}" data-loc="contact">${icon('phone', '')}<span>${t.actions.call}<small class="ltr">${SITE.phoneDisplay}</small></span></a>
-<a class="channel" href="mailto:${SITE.email}">${icon('mail', '')}<span>${t.form.email}<small class="ltr">${SITE.email}</small></span></a>
-<div class="channel">${icon('pin', '')}<span>${t.about.officeTitle}<small>${t.about.office}</small></span></div>
-</div>
-<h2 class="h-s" style="margin-top:44px">${c.company}</h2>
-<dl class="facts" style="margin-top:20px;grid-template-columns:minmax(0,1fr)"><div class="fact"><dt>${t.about.licenseFal}</dt><dd class="ltr">${SITE.falLicense}</dd></div><div class="fact"><dt>${t.about.licenseUnified}</dt><dd class="ltr">${SITE.unifiedNumber}</dd></div></dl>
-</div>
-</div></section>
+${contactSection(lang, { name: 'contact', title: null })}
 </main>`;
   return { path: '/contact/', key: 'contact', title: c.title, description: c.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }
