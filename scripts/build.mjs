@@ -206,6 +206,8 @@ const partnersBlock = (lang, tone = '') => `<ul class="partners${tone ? ' ' + to
 
 // A brochure is a file in site/assets/brochures/ or a full link, optionally one per language
 const brochureUrl = (p, lang) => { const b = typeof p.brochure === 'string' ? p.brochure : p.brochure[lang] || p.brochure.ar; return /^https?:/.test(b) ? b : `/assets/brochures/${b}`; };
+// A price is published only with its REGA ad license number (required for real estate ads)
+const priceOf = (p, lang) => (p.price && p.adLicense ? p.price[lang] : '');
 const projectUrl = (lang, p) => href(lang, `/properties/${p.slug}/`);
 
 function featureCard(lang, p) {
@@ -214,7 +216,7 @@ function featureCard(lang, p) {
 ${p.cover ? img(p.cover, p[lang], { cls: 'bg-img', sizes: '(max-width: 640px) 100vw, 50vw' }) : img('pattern-line', '', { cls: 'bg-img', sizes: '(max-width: 640px) 100vw, 50vw' })}
 <span class="badge badge-available">${t.status.available}</span>
 <div class="over"><h3><a href="${projectUrl(lang, p)}">${p[lang]}</a></h3><p class="meta">${t.city(p.district[lang])}${p.type ? comma(lang) + p.type[lang] : ''}</p>
-<div class="btn-row"><a class="btn btn-gold" href="${projectUrl(lang, p)}">${t.cta.viewProject}</a><a class="more" href="${projectUrl(lang, p)}#request">${p.price ? p.price[lang] : t.cta.price}</a></div></div>
+<div class="btn-row"><a class="btn btn-gold" href="${projectUrl(lang, p)}">${t.cta.viewProject}</a><a class="more" href="${projectUrl(lang, p)}#request">${priceOf(p, lang) || t.cta.price}</a></div></div>
 </article>`;
 }
 
@@ -317,7 +319,7 @@ function homePage(lang) {
 ${heroProjects.length ? `<div class="wide hero-media hero-slides" data-slides>
 <div class="slides">${heroProjects.map((p, i) => `<a class="slide${i === 0 ? ' is-active' : ''}" href="${projectUrl(lang, p)}"${i ? ' aria-hidden="true" tabindex="-1"' : ''}>
 ${img(p.cover, t.project.photoAlt(p[lang]), { sizes: '(max-width: 1400px) 100vw, 1400px', eager: i === 0 })}
-<span class="slide-info"><span class="badge badge-available">${t.status.available}</span><span class="slide-name">${p[lang]}</span><span class="slide-meta">${t.city(p.district[lang])}${p.price ? ` · ${p.price[lang]}` : ''}</span><span class="slide-more">${t.cta.viewProject}</span></span>
+<span class="slide-info"><span class="badge badge-available">${t.status.available}</span><span class="slide-name">${p[lang]}</span><span class="slide-meta">${t.city(p.district[lang])}${priceOf(p, lang) ? ` · ${priceOf(p, lang)}` : ''}</span><span class="slide-more">${t.cta.viewProject}</span></span>
 </a>`).join('')}</div>
 ${heroProjects.length > 1 ? `<div class="slide-dots" role="group" aria-label="${esc(t.home.projectsTitle)}">${heroProjects.map((p, i) => `<button type="button" aria-label="${esc(p[lang])}"${i === 0 ? ' aria-current="true"' : ''}></button>`).join('')}</div>` : ''}
 </div>` : ''}
@@ -470,7 +472,7 @@ function projectPage(lang, p) {
     has('area') ? [c.area, p.area[lang]] : null,
     has('bedrooms') ? [c.bedrooms, p.bedrooms[lang]] : null,
     has('delivery') ? [c.delivery, p.delivery[lang]] : null,
-    available ? [c.price, has('price') ? p.price[lang] : `<a class="more" href="#request" data-pick="project">${c.priceOnRequest}</a>`] : null,
+    available ? [c.price, priceOf(p, lang) ? priceOf(p, lang) : `<a class="more" href="#request" data-pick="project">${c.priceOnRequest}</a>`] : null,
     [c.status, t.status[p.status]],
     p.adLicense ? [c.adLicense, `<span class="ltr">${p.adLicense}</span>`] : null,
   ].filter(Boolean);

@@ -28,7 +28,7 @@ export const PARTNERS = [
 ]
 
 // status: 'available' or 'sold'. landing: the existing campaign/QR page (Zoho form) for the project.
-// Optional per project: type {ar,en}, price {ar,en} (approved price only), adLicense (REGA ad license no.),
+// Optional per project: type {ar,en}, price {ar,en} (approved price; shown only once adLicense is set), adLicense (REGA ad license no.),
 // developer {ar,en}, cover: photo name in site/assets/img/ (<name>-800.webp and a larger size),
 // area {ar,en}, bedrooms {ar,en}, delivery {ar,en}, nearby: [{ar,en,min}],
 // brochure: PDF file name in site/assets/brochures/ or a full link, or {ar, en} for one per language
