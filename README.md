@@ -1,50 +1,30 @@
-# React + TypeScript + Vite
+# JEDRA website (jedra.properties)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Static, bilingual (Arabic at `/`, English at `/en/`) website for JEDRA Real Estate Brokerage.
+No frameworks and no npm dependencies: one Node script builds plain HTML pages into `dist/`.
 
-Currently, two official plugins are available:
+## Edit content
+Everything a non-developer changes lives in **`site/content.mjs`**:
+- `SITE`: phone, WhatsApp, email, FAL license, unified number, GTM id, copyright year
+- `PARTNERS`: developer names (add a logo later by placing it in `site/assets/partners/`)
+- `PROJECTS`: name, district, status (`available` / `sold`), developer, landing page link
+- `T.ar` / `T.en`: all page text in Arabic and English
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Build and preview
+```bash
+node scripts/build.mjs            # writes dist/
+python3 -m http.server 8080 --directory dist   # open http://localhost:8080
 ```
+Lead forms post to Web3Forms using the `VITE_WEB3FORMS_KEY` (or `WEB3FORMS_KEY`) environment variable set in Vercel.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Structure
+- `site/styles.css`, `site/main.js`: design system and the small script (menu, rail, forms, tracking)
+- `site/assets/`: images (WebP, two sizes each), logos, favicons, social sharing images
+- `public/`: existing campaign / QR landing pages and the careers form, **copied unchanged** so printed QR codes keep working
+  (`/submitrequest.html`, `/hoksen/submitrequest.html`, `/newhires.html`)
+- `vercel.json`: build settings, short project links (`/bonsai`, `/hoksen`), security and caching headers
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Tracking (Google Tag Manager GTM-PVGMFHCS)
+The site pushes these `dataLayer` events for ad conversion tags:
+`generate_lead` (form sent, with `form_name` and `lead_type`), `click_call`, `click_whatsapp` (with `link_location`).
+Campaign parameters (`utm_*`, `gclid`, `fbclid`, `ttclid`, `sccid`) are kept for the visit and sent with every lead.
