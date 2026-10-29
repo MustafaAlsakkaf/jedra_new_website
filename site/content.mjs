@@ -84,8 +84,8 @@ export const T = {
     status: { available: 'متاح للبيع', sold: 'تم البيع' },
     city: (d) => `${d}، الرياض`,
     home: {
-      title: 'جيدرا | تسويق وبيع المشاريع العقارية في الرياض',
-      description: 'جيدرا للوساطة العقارية: نجمع بين الخبرة العقارية وإدارة المبيعات والتقنية لنساعد المطورين على تسويق مشاريعهم ونمنح المشترين والمستثمرين تجربة أوضح.',
+      title: 'جيدرا | نصل بالمشاريع العقارية إلى مُلّاكها',
+      description: 'وساطة وإدارة مبيعات عقارية مع نخبة المطورين في المملكة. أكثر من 350 مليون ريال من المبيعات و+300 وحدة عقارية مباعة.',
       h1: 'نصل بالمشاريع العقارية إلى مُلّاكها.',
       lead: 'وساطة وإدارة مبيعات عقارية يقودها فريق متخصص وتدعمها التقنية والبيانات. نعمل مع نخبة المطورين في المملكة، ونرافق كل مستثمر حتى يتملّك بثقة.',
       pathsTitle: 'كيف نخدمك؟',
@@ -355,8 +355,8 @@ export const T = {
     status: { available: 'Now selling', sold: 'Sold' },
     city: (d) => `${d}, Riyadh`,
     home: {
-      title: 'JEDRA | Real estate marketing and sales in Riyadh',
-      description: 'JEDRA Real Estate Brokerage combines real estate expertise, sales management and technology to help developers sell their projects and give buyers and investors a clearer experience.',
+      title: 'JEDRA | Bringing real estate projects to their owners',
+      description: 'Real estate brokerage and sales management with leading developers in Saudi Arabia. Over SAR 350 million in sales and 300+ units sold.',
       h1: 'Bringing real estate projects to their owners.',
       lead: 'Real estate brokerage and sales management, led by a specialist team and powered by technology and data. We work with leading developers in Saudi Arabia and guide every investor to ownership with confidence.',
       pathsTitle: 'How can we help?',

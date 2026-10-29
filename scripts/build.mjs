@@ -84,6 +84,8 @@ const SOCIAL = {
 };
 
 const BUILD = { css: '', js: '' };
+// Version tag on share images so WhatsApp and others fetch a new image whenever it changes
+const ogVersion = (lang) => createHash('sha1').update(readFileSync(join(SRC, `assets/og-${lang}.png`))).digest('hex').slice(0, 8);
 // International section image: add site/assets/img/makkah-<width>.webp and it is used automatically.
 const INTL = existsSync(join(SRC, 'assets/img/makkah-800.webp'))
   ? { img: 'makkah', alt: { ar: 'المسجد الحرام في مكة المكرمة', en: 'The Grand Mosque in Makkah' } }
@@ -112,7 +114,7 @@ ${page.noAlternate ? '' : `<link rel="canonical" href="${url}">
 <meta property="og:title" content="${esc(page.title)}">
 <meta property="og:description" content="${esc(page.description)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${SITE.url}/assets/og-${lang}.png">
+<meta property="og:image" content="${SITE.url}/assets/og-${lang}.png?v=${ogVersion(lang)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="${t.locale}">
