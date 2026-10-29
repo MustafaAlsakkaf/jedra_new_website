@@ -11,8 +11,8 @@
       "permanent": true
     },
     {
-      "source": "/projects/:path*",
-      "destination": "/properties/:path*",
+      "source": "/projects/:path(.*)",
+      "destination": "/properties/:path",
       "permanent": true
     },
     {
@@ -21,8 +21,8 @@
       "permanent": true
     },
     {
-      "source": "/en/projects/:path*",
-      "destination": "/en/properties/:path*",
+      "source": "/en/projects/:path(.*)",
+      "destination": "/en/properties/:path",
       "permanent": true
     },
     {
@@ -31,8 +31,8 @@
       "permanent": true
     },
     {
-      "source": "/ar/:path*",
-      "destination": "/:path*",
+      "source": "/ar/:path(.*)",
+      "destination": "/:path",
       "permanent": true
     },
     {
