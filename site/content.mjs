@@ -53,7 +53,7 @@ export const PROJECTS = [
   { slug: 'al-ajlan-riviera-35', ar: 'العجلان ريفييرا 35', en: 'Al Ajlan Riviera 35', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'sold', developer: { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera' } },
   { slug: 'al-ajlan-riviera-49', ar: 'العجلان ريفييرا 49', en: 'Al Ajlan Riviera 49', district: { ar: 'حي الروضة', en: 'Al Rawdah' }, status: 'sold', developer: { ar: 'العجلان ريفييرا', en: 'Al Ajlan Riviera' } },
   { slug: 'makeen-46', ar: 'مكين 46', en: 'Makeen 46', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'sold', developer: { ar: 'مكين', en: 'Makeen' } },
-  { slug: 'asala-residence', ar: 'أصالة ريزدنس', en: 'Asala Residence', district: { ar: 'حي النهضة', en: 'Al Nahdah' }, status: 'sold' },
+  { slug: 'asala-residence', ar: 'أصالة ريزدنس', en: 'Asala Residence', district: { ar: 'حي النهضة', en: 'Al Nahdah' }, status: 'sold', developer: { ar: 'محمد الحبيب', en: 'Mohammad Al Habib' } },
 ];
 
 export const T = {
