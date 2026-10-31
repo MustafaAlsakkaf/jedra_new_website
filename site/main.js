@@ -44,7 +44,7 @@
   });
 
   // "Talk to an advisor" buttons go to the form on the current page when there is one
-  const pageForm = document.querySelector('.contact-split');
+  const pageForm = document.querySelector('form[data-lead]');
   if (pageForm) {
     const target = '#' + pageForm.closest('section').id;
     document.querySelectorAll('[data-to-form]').forEach((a) => { a.href = target; });
@@ -191,6 +191,33 @@
       }
     });
   });
+  // Job applications: checked here, then posted straight to the Zoho CRM webform (which returns to ?sent=1)
+  document.querySelectorAll('form[data-zoho]').forEach((form) => {
+    const status = form.querySelector('.form-status');
+    const fail = (msg, el) => { status.textContent = msg; status.className = 'form-status err'; if (el) el.focus(); };
+    if (params.get('sent') === '1') {
+      form.hidden = true;
+      const note = form.parentElement.querySelector('.sent-note');
+      if (note) { note.hidden = false; requestAnimationFrame(() => note.closest('section').scrollIntoView()); }
+      return;
+    }
+    form.addEventListener('submit', (e) => {
+      const missing = [...form.querySelectorAll('input[required]:not([type=radio]):not([type=checkbox])')].find((el) => !el.value.trim());
+      if (missing) { e.preventDefault(); return fail(form.dataset.needFields, missing); }
+      const phone = form.querySelector('input[type=tel]');
+      if (phone.value.replace(/[^\d]/g, '').length < 9) { e.preventDefault(); return fail(form.dataset.invalidPhone, phone); }
+      const groups = [...new Set([...form.querySelectorAll('input[type=radio][required]')].map((r) => r.name))];
+      const empty = groups.find((n) => !form.querySelector(`input[name="${n}"]:checked`));
+      if (empty) { e.preventDefault(); return fail(form.dataset.needFields, form.querySelector(`input[name="${empty}"]`)); }
+      const consent = form.querySelector('input[name="consent_local"]');
+      if (!consent.checked) { e.preventDefault(); return fail(form.dataset.needConsent, consent); }
+      consent.disabled = true; // not a Zoho field
+      track('generate_lead', { form_name: form.dataset.zoho, request_type: 'job_application' });
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = form.dataset.sending;
+    });
+  });
+
   // Project filters (progressive: without script every project is shown)
   document.querySelectorAll('[data-filter-scope]').forEach((scope) => {
     const buttons = scope.querySelectorAll('.filter');

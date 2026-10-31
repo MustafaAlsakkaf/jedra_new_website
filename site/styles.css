@@ -497,3 +497,10 @@ sup.fn { font-size: .28em; font-weight: 700; vertical-align: super; margin-inlin
 /* Eight partners: two even rows of four, two per row on small screens */
 .partners { grid-template-columns: repeat(4, auto); gap: 40px 72px; }
 @media (max-width: 900px) { .partners { grid-template-columns: repeat(2, auto); gap: 32px 48px; } }
+
+/* Careers */
+.form .hint { display: block; margin-top: 6px; font-size: 13px; color: var(--slate); }
+.form input[type=file] { padding: 12px; background: var(--white); border: 1px dashed var(--steel); border-radius: var(--radius-s, 12px); width: 100%; font: inherit; }
+.role-card h3 { font-size: 26px; font-weight: 900; }
+.role-card .role-meta { color: var(--steel); margin-top: 6px; }
+.sent-note { background: var(--white); border-radius: var(--radius-l); padding: clamp(28px, 4vw, 44px); }

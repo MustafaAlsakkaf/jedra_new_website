@@ -143,7 +143,7 @@ function header(lang, page) {
     ['/about/', n.about, 'about'],
   ];
   const navLinks = links.map(([p, label, key]) => `<a href="${href(lang, p)}"${page.key === key ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  const careers = `<a href="/newhires.html">${n.careers}</a>`;
+  const careers = `<a href="${href(lang, '/careers/')}"${page.key === 'careers' ? ' aria-current="page"' : ''}>${n.careers}</a>`;
   const switchHref = href(other(lang), page.path === '/404' ? '/' : page.path);
   return `<body${page.bodyClass ? ` class="${page.bodyClass}"` : ''}>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${SITE.gtm}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -175,7 +175,7 @@ function footer(lang, page) {
 ${crumbs}
 <div class="footer-grid">
 <div><a class="footer-logo" href="${href(lang, '/')}" aria-label="${esc(n.homeAria)}">${logo(lang, 'light')}</a><p>${f.tagline}</p>${socialHtml}</div>
-<div><h2>${f.company}</h2><ul><li><a href="${href(lang, '/about/')}">${n.about}</a></li><li><a href="${href(lang, '/properties/')}">${n.projects}</a></li><li><a href="/newhires.html">${n.careers}</a></li></ul></div>
+<div><h2>${f.company}</h2><ul><li><a href="${href(lang, '/about/')}">${n.about}</a></li><li><a href="${href(lang, '/properties/')}">${n.projects}</a></li><li><a href="${href(lang, '/careers/')}">${n.careers}</a></li></ul></div>
 <div><h2>${f.services}</h2><ul><li><a href="${href(lang, '/developers/')}">${n.developers}</a></li><li><a href="${href(lang, '/properties/')}">${f.buyers}</a></li><li><a href="${href(lang, '/international/')}">${n.international}</a></li></ul></div>
 <div><h2>${f.contact}</h2><div class="social contact-icons">${SITE.directContact ? `<a href="tel:${SITE.phone}" data-loc="footer" aria-label="${esc(t.actions.call)} ${SITE.phoneDisplay}" title="${SITE.phoneDisplay}">${icon('phone', '')}</a><a href="${wa(t.waText)}" data-loc="footer" aria-label="${esc(t.actions.whatsapp)}" title="${esc(t.actions.whatsapp)}">${WA_SVG}</a>` : ''}<a href="mailto:${SITE.email}" aria-label="${SITE.email}" title="${SITE.email}">${icon('mail', '')}</a></div><ul style="margin-top:16px"><li><a href="${href(lang, '/contact/')}">${n.contact}</a></li></ul></div>
 </div>
@@ -365,7 +365,7 @@ ${img('network', '', { cls: 'bg-img' })}
 <article class="tile gold">
 ${img('fabric', '', { cls: 'bg-img', sizes: '(max-width: 760px) 100vw, 50vw' })}
 <p class="eyebrow">${h.careersTile.eyebrow}</p><h2 class="h-m">${h.careersTile.title}</h2>
-<div class="btn-row"><a class="more" href="/newhires.html">${t.cta.apply}</a></div>
+<div class="btn-row"><a class="more" href="${href(lang, '/careers/')}">${t.cta.apply}</a></div>
 </article>
 <article class="tile dark tile-shade">
 ${img(INTL.img, INTL.alt[lang], { cls: 'bg-img', sizes: '(max-width: 760px) 100vw, 50vw' })}
@@ -558,6 +558,61 @@ ${contactSection(lang, { type: 'project', name: 'international', interest: 'inte
   return { path: '/international/', key: 'international', title: i.title, description: i.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
 }
 
+
+// Job applications post straight to the Zoho CRM webform "Website - Job Application" (Candidates module).
+// Field names and tokens come from that webform's embed code; change them only together with the webform.
+const ZOHO_CAREERS = {
+  action: 'https://crm.zoho.sa/crm/WebForm',
+  xnQsjsdp: '6b0a1ca3db0a0ebe4ecb6a4129a99cb6b3e3614572ae74b1fb229131f096b57a',
+  xmIwtLD: 'eeaaf6741c8f3ecd69758dc7ae85df96f6267230ce2aeebe011ec8e6d94e74248ade5219b1ee5b7b1a19f9ec3a8298b3',
+  actionType: 'Q3VzdG9tTW9kdWxlMQ==',
+  jobOpening: 'Saudi - Sales - Real Estate Consultant - Contract',
+  status: 'Screening',
+  analytics: 'https://crm.zohopublic.sa/crm/WebFormAnalyticsServeServlet?rid=e9e67308aba20338d89d188ff150ffcd4332fb313edce73748694b7836807a55d05415b9a72ccaaa0a593629c3523972gid3e6f364f7df290a09a8512cec33c9f38df09d933d8a5359b7c9ab12337143a90gid981b194f08c7fd84e8f71f45e9f99ffadbc3c06ee1c9767270e5ddf34744824cgidd970047fbf84b603151e74d86e72104d6fbbf9670df1d3b1fb51a6fa5d53a283&tw=dd5b824b03dd39d5c345b51c2425a7919d7c4dc6e0f8297f4df5c1a855579077&version=v2',
+};
+
+function careersPage(lang) {
+  const t = T[lang];
+  const c = t.careers;
+  const z = ZOHO_CAREERS;
+  const crumbs = [[t.nav.careers, '/careers/']];
+  const field = (id, label, input, full = false) => `<div class="field${full ? ' full' : ''}"><label for="cr-${id}">${label}</label>${input}</div>`;
+  const opt = `<span class="opt">${t.form.optional}</span>`;
+  const radios = (name, legend, options, required = false) => `<fieldset class="field full"><legend>${legend}${required ? '' : ' ' + opt}</legend><div class="chips">${Object.entries(options).map(([v, label]) => `<label class="chip"><input type="radio" name="${name}" value="${esc(v)}"${required ? ' required' : ''}><span>${label}</span></label>`).join('')}</div></fieldset>`;
+  const form = `<form class="form" data-zoho="careers" action="${z.action}" method="POST" enctype="multipart/form-data" accept-charset="UTF-8" data-need-fields="${esc(c.needFields)}" data-invalid-phone="${esc(t.form.invalidPhone)}" data-need-consent="${esc(t.form.needConsent)}" data-sending="${esc(c.sending)}" novalidate>
+<input type="hidden" name="xnQsjsdp" value="${z.xnQsjsdp}"><input type="hidden" name="zc_gad" value=""><input type="hidden" name="xmIwtLD" value="${z.xmIwtLD}"><input type="hidden" name="actionType" value="${z.actionType}">
+<input type="hidden" name="returnURL" value="${SITE.url}${href(lang, '/careers/')}?sent=1">
+<input type="hidden" name="COBJ1CF4" value="${esc(z.jobOpening)}"><input type="hidden" name="COBJ1CF14" value="${z.status}">
+<input type="text" name="aG9uZXlwb3Q" value="" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+${field('name', c.name, `<input id="cr-name" name="COBJ1CF1" type="text" maxlength="255" autocomplete="name" placeholder="${esc(c.namePh)}" required>`)}
+${field('phone', c.phone, `<input id="cr-phone" name="COBJ1CF2" type="tel" maxlength="30" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="${esc(t.form.phonePh)}" required>`)}
+${field('district', `${c.district} ${opt}`, `<input id="cr-district" name="COBJ1CF5" type="text" maxlength="255" placeholder="${esc(c.districtPh)}">`)}
+${field('age', `${c.age} ${opt}`, `<input id="cr-age" name="COBJ1CF59" type="number" inputmode="numeric" min="16" max="80">`)}
+${radios('COBJ1CF10', c.laptop, { Yes: c.yes, No: c.no })}
+${radios('COBJ1CF12', c.source, c.sources, true)}
+${field('cv', `${c.cv} ${opt}`, `<input id="cr-cv" name="theFile" type="file" accept=".pdf,.doc,.docx,image/*"><small class="hint">${c.cvHint}</small>`, true)}
+<label class="consent full"><input type="checkbox" name="consent_local" value="yes" required><span>${c.consent(href(lang, '/privacy/'))}</span></label>
+<button class="btn btn-navy full" type="submit">${c.submit}</button><p class="form-status" role="status" aria-live="polite"></p>
+</form>`;
+  const body = `<main id="main">
+<section class="dark hero center pad-s" style="padding-bottom:72px">${img('pattern-line', '', { cls: 'bg-img dim' })}<div class="wrap over"><p class="eyebrow">${c.eyebrow}</p><h1 class="h-xl" style="margin-top:12px">${c.h1}</h1><p class="lead on-dark">${c.lead}</p>
+<div class="btn-row"><a class="btn btn-gold" href="#apply">${c.cta}</a></div></div></section>
+<section class="light pad"><div class="wrap"><h2 class="h-l center">${c.whyTitle}</h2>
+<div class="grid-3 features" style="margin-top:56px;gap:40px 28px">${cards(c.why, 'feature')}</div></div></section>
+<section class="mist pad" id="apply" aria-labelledby="apply-title"><div class="wrap">
+<div class="contact-head"><h2 class="h-l" id="apply-title">${c.formTitle}</h2><p class="lead">${c.formLead}</p></div>
+<div class="contact-split">
+<div class="contact-form">
+<div class="sent-note" hidden><h3 class="h-m">${c.sentTitle}</h3><p class="lead" style="margin-top:12px">${c.sentText}</p><div class="btn-row" style="margin-top:24px"><a class="btn btn-navy" href="${href(lang, '/')}">${c.home}</a></div></div>
+${form}</div>
+<aside class="contact-aside role-card" aria-label="${esc(c.roleLabel)}"><p class="eyebrow">${c.roleLabel}</p><h3 style="margin-top:10px">${c.role}</h3><p class="role-meta">${c.roleMeta}</p>
+<p class="aside-legal">${t.footer.fal} <span class="ltr">${SITE.falLicense}</span><br>${t.footer.unified} <span class="ltr">${SITE.unifiedNumber}</span></p></aside>
+</div></div></section>
+<script id="wf_anal" src="${z.analytics}" defer></script>
+</main>`;
+  return { path: '/careers/', key: 'careers', title: c.title, description: c.description, body, crumbs, jsonld: [breadcrumbLd(lang, crumbs)] };
+}
+
 function contactPage(lang) {
   const t = T[lang];
   const c = t.contactPage;
@@ -617,7 +672,7 @@ for (const entry of readdirSync(LEGACY)) {
 
 const written = [];
 for (const lang of ['ar', 'en']) {
-  const pages = [homePage(lang), developersPage(lang), projectsPage(lang), aboutPage(lang), internationalPage(lang), contactPage(lang), legalPage(lang, 'privacy'), legalPage(lang, 'terms'), ...PROJECTS.map((p) => projectPage(lang, p))];
+  const pages = [homePage(lang), developersPage(lang), projectsPage(lang), aboutPage(lang), internationalPage(lang), contactPage(lang), careersPage(lang), legalPage(lang, 'privacy'), legalPage(lang, 'terms'), ...PROJECTS.map((p) => projectPage(lang, p))];
   for (const page of pages) written.push({ lang, page: writePage(lang, page) });
 }
 writePage('ar', notFoundPage());
