@@ -98,6 +98,9 @@
     else if (href.includes('wa.me/')) track('click_whatsapp', { link_location: a.dataset.loc || 'page' });
   });
 
+  let ZOHO_ROUTES = {};
+  try { ZOHO_ROUTES = JSON.parse(document.getElementById('zoho-routes').textContent); } catch (e) { /* no routes */ }
+
   // Lead forms
   document.querySelectorAll('form[data-lead]').forEach((form) => {
     const status = form.querySelector('.form-status');
@@ -161,6 +164,19 @@
       data.append('from_name', 'JEDRA website');
       data.append('page', location.href);
       Object.entries(campaign).forEach(([k, v]) => data.append(k, v));
+      // Requests for projects with a Zoho route (e.g. Hoksen) also go straight into Zoho CRM as a new contact
+      const typeKey0 = keyOf('request_type');
+      const slug = ['project', 'visit'].includes(typeKey0) ? keyOf('project') : typeKey0 === 'brochure' ? form.dataset.project : '';
+      const route = slug && ZOHO_ROUTES[slug];
+      if (route) {
+        const label = (n) => { const el = form.querySelector(`[name="${n}"]`); const f = el && el.closest('.field'); const l = f && f.querySelector('legend, label'); return l ? l.childNodes[0].textContent.trim() : n; };
+        const details = ['request_type', 'visit_time', 'unit_type', 'budget', 'contact_by', 'message']
+          .filter((n) => data.get(n)).map((n) => `${label(n)}: ${data.get(n)}`).concat(`الصفحة: ${location.href}`).join('\n');
+        const z = new URLSearchParams({ xnQsjsdp: route.xnQsjsdp, zc_gad: '', xmIwtLD: route.xmIwtLD, actionType: route.actionType, returnURL: 'null',
+          'Last Name': data.get('name') || '', Mobile: data.get('phone') || '', CONTACTCF1: details, CONTACTCF2: 'عميل جديد', CONTACTCF11: route.project,
+          CONTACTCF10: campaign.utm_source || 'website', CONTACTCF7: campaign.utm_medium || 'website', CONTACTCF9: campaign.utm_campaign || `website-${typeKey0}`, CONTACTCF8: route.utmProject, aG9uZXlwb3Q: '' });
+        try { await fetch(route.action, { method: 'POST', mode: 'no-cors', body: z }); data.append('zoho', 'أُدخل في Zoho تلقائياً'); } catch (err) { data.append('zoho', 'لم يُدخل في Zoho، أدخله يدوياً'); }
+      }
       submit.disabled = true;
       submit.textContent = form.dataset.sending;
       status.textContent = '';

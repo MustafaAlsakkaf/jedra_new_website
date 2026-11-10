@@ -190,6 +190,7 @@ ${SITE.directContact ? `<a class="wa-float" href="${wa(t.waText)}" aria-label="$
 <a class="action-call" href="tel:${SITE.phone}" data-loc="bar">${icon('phone', '')}${t.actions.call}</a>
 <a class="action-wa" href="${wa(t.waText)}" data-loc="bar">${WA_SVG}${t.actions.whatsapp}</a>
 </nav>` : `<nav class="action-bar single" aria-label="${esc(t.actions.bar)}"><a class="action-wa" href="${href(lang, '/contact/')}" data-to-form>${n.cta}</a></nav>`}
+<script type="application/json" id="zoho-routes">${JSON.stringify(Object.fromEntries(PROJECTS.filter((p) => p.zoho).map((p) => [p.slug, p.zoho])))}</script>
 <script src="/assets/main.js?v=${BUILD.js}" defer></script>
 </body>
 </html>`;
@@ -235,7 +236,7 @@ function soldItem(lang, p, linked = true) {
 function leadForm(lang, { type = 'general', project = null, interest = '', name = 'website' } = {}) {
   const t = T[lang];
   const f = t.form;
-  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}" data-need-fields="${esc(f.needFields)}"${project && project.brochure ? ` data-brochure="${esc(brochureUrl(project, lang))}" data-brochure-ready="${esc(f.brochureReady)}" data-brochure-link="${esc(f.brochureLink)}"` : ''}`;
+  const attrs = `data-lead="${name}" data-key="${FORM_KEY}" data-subject="${lang === 'ar' ? 'طلب جديد من موقع جيدرا' : 'New lead from the JEDRA website'}" data-sending="${esc(f.sending)}" data-success="${esc(f.success)}" data-error="${esc(f.error)}" data-invalid-phone="${esc(f.invalidPhone)}" data-need-consent="${esc(f.needConsent)}" data-need-fields="${esc(f.needFields)}" data-project="${project ? project.slug : ''}"${project && project.brochure ? ` data-brochure="${esc(brochureUrl(project, lang))}" data-brochure-ready="${esc(f.brochureReady)}" data-brochure-link="${esc(f.brochureLink)}"` : ''}`;
   const hidden = `<input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="language" value="${lang}">${interest ? `<input type="hidden" name="interest" value="${esc(interest)}">` : ''}`;
   const id = (x) => `${name}-${x}`;
   const field = (key, label, input, { full = false, w = '' } = {}) => `<div class="field${full ? ' full' : ''}"${when(w)}><label for="${id(key)}">${label}</label>${input}</div>`;

@@ -44,6 +44,8 @@ export const PROJECTS = [
     price: { ar: 'يبدأ من 1,700,000 ريال', en: 'From SAR 1,700,000' },
     type: { ar: 'فلل مستقلة، تاون هاوس، بنتهاوس', en: 'Standalone villas, townhouses, penthouses' },
     brochure: 'https://drive.google.com/file/d/1199Og2baSurRYwqEgdKevVmZFW1zQLm2/view',
+    // Website requests for this project go straight into Zoho CRM (Contacts), through the same webform as its campaign page.
+    zoho: { action: 'https://crm.zoho.sa/crm/WebToContactForm', xnQsjsdp: '2ad2974857bcc7cf9551f6525397176981c94ade064008dd611ef794a9793f55', xmIwtLD: 'cd4cf13423acb00a3bddf865660ed02eabd2300b896940a38c0eba1158ffefb740fffaf4dfd66819c1e371bb2d0e689d', actionType: 'Q29udGFjdHM=', project: 'هوكسن', utmProject: 'HOKSEN' },
     developer: { ar: 'نقش للاستثمار', en: 'Naqsh Investment' },
     nearby: [
       { ar: 'جامعة الأميرة نورة', en: 'Princess Nourah University', min: 7 },
