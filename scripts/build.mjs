@@ -190,6 +190,9 @@ ${SITE.directContact ? `<a class="wa-float" href="${wa(t.waText)}" aria-label="$
 <a class="action-call" href="tel:${SITE.phone}" data-loc="bar">${icon('phone', '')}${t.actions.call}</a>
 <a class="action-wa" href="${wa(t.waText)}" data-loc="bar">${WA_SVG}${t.actions.whatsapp}</a>
 </nav>` : `<nav class="action-bar single" aria-label="${esc(t.actions.bar)}"><a class="action-wa" href="${href(lang, '/contact/')}" data-to-form>${n.cta}</a></nav>`}
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); }; window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
 <script type="application/json" id="zoho-routes">${JSON.stringify(Object.fromEntries(PROJECTS.filter((p) => p.zoho).map((p) => [p.slug, p.zoho])))}</script>
 <script type="application/json" id="rotation-routes">${JSON.stringify(Object.fromEntries(PROJECTS.filter((p) => p.rotation).map((p) => [p.slug, { url: p.rotation, project: p.ar }])))}</script>
 <script src="/assets/main.js?v=${BUILD.js}" defer></script>
