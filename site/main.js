@@ -183,7 +183,8 @@
       const turnRoute = slug && ROTATION_ROUTES[slug];
       if (turnRoute) {
         try {
-          const r = await fetch(turnRoute.url, { method: 'POST' });
+          const testRun = params.get('rotation_test') === '1'; // test runs keep their own counter and never take a real turn
+          const r = await fetch(turnRoute.url, { method: 'POST', headers: testRun ? { 'x-rotation-test': '1' } : {} });
           const sup = await r.json();
           if (!sup.phone) throw new Error('no supervisor');
           const lines = [`السلام عليكم ${sup.name}،`, `عميل جديد لمشروع ${turnRoute.project} من موقع جيدرا، أرجو التواصل معه:`, `الاسم: ${data.get('name') || ''}`, `الجوال: ${data.get('phone') || ''}`, `نوع الطلب: ${data.get('request_type') || ''}`];
@@ -194,7 +195,7 @@
           data.append('المشرف المسؤول (بالدور)', `${sup.name} (${sup.phone.replace(/^966/, '0')}) - الطلب رقم ${sup.turn}`);
           data.append('رسالة جاهزة للمشرف', msg);
           data.append('أرسلها للمشرف عبر واتساب', `https://wa.me/${sup.phone}?text=${encodeURIComponent(msg)}`);
-          data.set('subject', `${form.dataset.subject} | ${turnRoute.project} | المشرف: ${sup.name}`);
+          data.set('subject', `${testRun ? '[تجربة] ' : ''}${form.dataset.subject} | ${turnRoute.project} | المشرف: ${sup.name}`);
         } catch (err) { data.append('المشرف المسؤول (بالدور)', 'تعذّر تحديد الدور، اختر المشرف يدوياً'); }
       }
       submit.disabled = true;
