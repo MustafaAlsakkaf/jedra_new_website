@@ -98,6 +98,8 @@
     else if (href.includes('wa.me/')) track('click_whatsapp', { link_location: a.dataset.loc || 'page' });
   });
 
+  let ROTATION_ROUTES = {};
+  try { ROTATION_ROUTES = JSON.parse(document.getElementById('rotation-routes').textContent); } catch (e) { /* no rotation */ }
   let ZOHO_ROUTES = {};
   try { ZOHO_ROUTES = JSON.parse(document.getElementById('zoho-routes').textContent); } catch (e) { /* no routes */ }
 
@@ -176,6 +178,24 @@
           'Last Name': data.get('name') || '', Mobile: data.get('phone') || '', CONTACTCF1: details, CONTACTCF2: 'عميل جديد', CONTACTCF11: route.project,
           CONTACTCF10: campaign.utm_source || 'website', CONTACTCF7: campaign.utm_medium || 'website', CONTACTCF9: campaign.utm_campaign || `website-${typeKey0}`, CONTACTCF8: route.utmProject, aG9uZXlwb3Q: '' });
         try { await fetch(route.action, { method: 'POST', mode: 'no-cors', body: z }); data.append('zoho', 'أُدخل في Zoho تلقائياً'); } catch (err) { data.append('zoho', 'لم يُدخل في Zoho، أدخله يدوياً'); }
+      }
+      // Projects with a rotation (e.g. Bonsai): the next supervisor in turn, and a message ready to forward on WhatsApp
+      const turnRoute = slug && ROTATION_ROUTES[slug];
+      if (turnRoute) {
+        try {
+          const r = await fetch(turnRoute.url, { method: 'POST' });
+          const sup = await r.json();
+          if (!sup.phone) throw new Error('no supervisor');
+          const lines = [`السلام عليكم ${sup.name}،`, `عميل جديد لمشروع ${turnRoute.project} من موقع جيدرا، أرجو التواصل معه:`, `الاسم: ${data.get('name') || ''}`, `الجوال: ${data.get('phone') || ''}`, `نوع الطلب: ${data.get('request_type') || ''}`];
+          if (data.get('visit_time')) lines.push(`الموعد المفضل للزيارة: ${data.get('visit_time')}`);
+          if (data.get('contact_by')) lines.push(`طريقة التواصل المفضلة: ${data.get('contact_by')}`);
+          if (data.get('message')) lines.push(`ملاحظات العميل: ${data.get('message')}`);
+          const msg = lines.join('\n');
+          data.append('المشرف المسؤول (بالدور)', `${sup.name} (${sup.phone.replace(/^966/, '0')}) - الطلب رقم ${sup.turn}`);
+          data.append('رسالة جاهزة للمشرف', msg);
+          data.append('أرسلها للمشرف عبر واتساب', `https://wa.me/${sup.phone}?text=${encodeURIComponent(msg)}`);
+          data.set('subject', `${form.dataset.subject} | ${turnRoute.project} | المشرف: ${sup.name}`);
+        } catch (err) { data.append('المشرف المسؤول (بالدور)', 'تعذّر تحديد الدور، اختر المشرف يدوياً'); }
       }
       submit.disabled = true;
       submit.textContent = form.dataset.sending;

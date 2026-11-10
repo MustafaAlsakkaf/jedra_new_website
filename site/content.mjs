@@ -39,7 +39,9 @@ export const PROJECTS = [
   { slug: 'bonsai', ar: 'بونساي', en: 'Bonsai', district: { ar: 'حي النهضة', en: 'Al Nahdah' }, status: 'available', landing: '/submitrequest.html', cover: 'project-bonsai',
     price: { ar: 'يبدأ من 600,000 ريال', en: 'From SAR 600,000' },
     type: { ar: 'استوديوهات وشقق', en: 'Studios and apartments' },
-    brochure: { ar: 'https://drive.google.com/file/d/1MU6Bw0AXU3wj5aEUN18hjSmcxLXBjlKN/view', en: 'https://drive.google.com/file/d/1j4AYHS-MNE4y5TKyb4XkgjPwa04oX5bq/view' } },
+    brochure: { ar: 'https://drive.google.com/file/d/1MU6Bw0AXU3wj5aEUN18hjSmcxLXBjlKN/view', en: 'https://drive.google.com/file/d/1j4AYHS-MNE4y5TKyb4XkgjPwa04oX5bq/view' },
+    // Website requests for this project are handed to the project supervisors in turn (list in api/bonsai-turn.mjs).
+    rotation: '/api/bonsai-turn' },
   { slug: 'hoksen', ar: 'هوكسن', en: 'Hoksen', district: { ar: 'حي النرجس', en: 'Al Narjis' }, status: 'available', landing: '/hoksen/submitrequest.html', cover: 'project-hoksen',
     price: { ar: 'يبدأ من 1,700,000 ريال', en: 'From SAR 1,700,000' },
     type: { ar: 'فلل مستقلة، تاون هاوس، بنتهاوس', en: 'Standalone villas, townhouses, penthouses' },

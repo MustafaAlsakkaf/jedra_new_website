@@ -191,6 +191,7 @@ ${SITE.directContact ? `<a class="wa-float" href="${wa(t.waText)}" aria-label="$
 <a class="action-wa" href="${wa(t.waText)}" data-loc="bar">${WA_SVG}${t.actions.whatsapp}</a>
 </nav>` : `<nav class="action-bar single" aria-label="${esc(t.actions.bar)}"><a class="action-wa" href="${href(lang, '/contact/')}" data-to-form>${n.cta}</a></nav>`}
 <script type="application/json" id="zoho-routes">${JSON.stringify(Object.fromEntries(PROJECTS.filter((p) => p.zoho).map((p) => [p.slug, p.zoho])))}</script>
+<script type="application/json" id="rotation-routes">${JSON.stringify(Object.fromEntries(PROJECTS.filter((p) => p.rotation).map((p) => [p.slug, { url: p.rotation, project: p.ar }])))}</script>
 <script src="/assets/main.js?v=${BUILD.js}" defer></script>
 </body>
 </html>`;
